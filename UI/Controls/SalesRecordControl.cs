@@ -50,7 +50,7 @@ public sealed class SalesRecordControl : UserControl
             Dock = DockStyle.Top,
             AutoSize = true,
             Padding = new Padding(0, 0, 0, 12),
-            WrapContents = false
+            WrapContents = true
         };
 
         _fromPicker.Format = DateTimePickerFormat.Short;
@@ -73,25 +73,27 @@ public sealed class SalesRecordControl : UserControl
 
     private Control BuildContent()
     {
-        var split = new SplitContainer
-        {
-            Dock = DockStyle.Fill,
-            Orientation = Orientation.Horizontal,
-            SplitterDistance = 330
-        };
-
         ConfigureOrderGrid();
         ConfigureItemGrid();
 
-        split.Panel1.Controls.Add(WrapWithTitle("销售单", _orderGrid));
-        split.Panel2.Controls.Add(WrapWithTitle("订单明细", _itemGrid));
-        return split;
+        var content = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 1,
+            RowCount = 2
+        };
+        content.RowStyles.Add(new RowStyle(SizeType.Percent, 58));
+        content.RowStyles.Add(new RowStyle(SizeType.Percent, 42));
+        content.Controls.Add(WrapWithTitle("销售单", _orderGrid), 0, 0);
+        content.Controls.Add(WrapWithTitle("订单明细", _itemGrid), 0, 1);
+        return content;
     }
 
     private Control BuildSummary()
     {
         _summaryLabel.Dock = DockStyle.Fill;
-        _summaryLabel.Height = 42;
+        _summaryLabel.AutoSize = false;
+        _summaryLabel.MinimumSize = new Size(0, 42);
         _summaryLabel.TextAlign = ContentAlignment.MiddleRight;
         _summaryLabel.Font = new Font("Microsoft YaHei UI", 11F, FontStyle.Bold);
         _summaryLabel.ForeColor = Color.FromArgb(31, 41, 55);

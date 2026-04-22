@@ -115,6 +115,7 @@ public sealed class CashierControl : UserControl
         var container = new Panel
         {
             Dock = DockStyle.Fill,
+            AutoScroll = true,
             BackColor = Color.White,
             Padding = new Padding(1)
         };
@@ -124,31 +125,25 @@ public sealed class CashierControl : UserControl
 
     private Control BuildCheckoutPanel()
     {
-        var panel = new TableLayoutPanel
+        var panel = new FlowLayoutPanel
         {
             Dock = DockStyle.Bottom,
             AutoSize = true,
-            ColumnCount = 8,
-            Padding = new Padding(0, 14, 0, 0)
+            FlowDirection = FlowDirection.LeftToRight,
+            Padding = new Padding(0, 14, 0, 0),
+            WrapContents = true
         };
-
-        panel.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-        panel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120));
-        panel.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-        panel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120));
-        panel.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-        panel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120));
-        panel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-        panel.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
 
         _discountBox.ValueChanged += (_, _) => RefreshTotals();
         _receivedBox.ValueChanged += (_, _) => RefreshTotals();
+        _discountBox.Width = 120;
+        _receivedBox.Width = 120;
 
         var totals = new FlowLayoutPanel
         {
             AutoSize = true,
             FlowDirection = FlowDirection.LeftToRight,
-            WrapContents = false
+            WrapContents = true
         };
         totals.Controls.Add(CreateSummaryItem("合计", _totalAmountLabel));
         totals.Controls.Add(CreateSummaryItem("应收", _payableAmountLabel));
@@ -158,13 +153,12 @@ public sealed class CashierControl : UserControl
         checkoutButton.Width = 130;
         checkoutButton.Height = 44;
 
-        panel.Controls.Add(CreateFieldLabel("优惠"), 0, 0);
-        panel.Controls.Add(_discountBox, 1, 0);
-        panel.Controls.Add(CreateFieldLabel("实收"), 2, 0);
-        panel.Controls.Add(_receivedBox, 3, 0);
-        panel.Controls.Add(totals, 4, 0);
-        panel.SetColumnSpan(totals, 3);
-        panel.Controls.Add(checkoutButton, 7, 0);
+        panel.Controls.Add(CreateFieldLabel("优惠"));
+        panel.Controls.Add(_discountBox);
+        panel.Controls.Add(CreateFieldLabel("实收"));
+        panel.Controls.Add(_receivedBox);
+        panel.Controls.Add(totals);
+        panel.Controls.Add(checkoutButton);
         return panel;
     }
 

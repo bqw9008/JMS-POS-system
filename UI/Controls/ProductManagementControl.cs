@@ -43,6 +43,7 @@ public sealed class ProductManagementControl : UserControl
         {
             Dock = DockStyle.Top,
             AutoSize = true,
+            WrapContents = true,
             Padding = new Padding(0, 0, 0, 8)
         };
         _keywordTextBox.Width = 260;
@@ -51,12 +52,14 @@ public sealed class ProductManagementControl : UserControl
         toolbar.Controls.Add(CreateButton("搜索", async (_, _) => await LoadProductsAsync()));
         toolbar.Controls.Add(CreateButton("新增", (_, _) => ClearForm()));
 
-        var split = new SplitContainer
+        var content = new TableLayoutPanel
         {
             Dock = DockStyle.Fill,
-            FixedPanel = FixedPanel.Panel2,
-            SplitterDistance = 760
+            ColumnCount = 2,
+            RowCount = 1
         };
+        content.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 72));
+        content.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 28));
 
         _grid.Dock = DockStyle.Fill;
         _grid.AutoGenerateColumns = false;
@@ -107,10 +110,17 @@ public sealed class ProductManagementControl : UserControl
         form.Controls.Add(CreateButton("保存", async (_, _) => await SaveAsync()));
         form.Controls.Add(CreateButton("停用", async (_, _) => await DisableAsync()));
 
-        split.Panel1.Controls.Add(_grid);
-        split.Panel2.Controls.Add(form);
+        var formHost = new Panel
+        {
+            Dock = DockStyle.Fill,
+            AutoScroll = true
+        };
+        formHost.Controls.Add(form);
+
+        content.Controls.Add(_grid, 0, 0);
+        content.Controls.Add(formHost, 1, 0);
         root.Controls.Add(toolbar, 0, 0);
-        root.Controls.Add(split, 0, 1);
+        root.Controls.Add(content, 0, 1);
         Controls.Add(root);
     }
 

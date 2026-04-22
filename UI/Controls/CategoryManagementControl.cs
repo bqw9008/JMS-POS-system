@@ -22,12 +22,14 @@ public sealed class CategoryManagementControl : UserControl
 
     private void BuildLayout()
     {
-        var split = new SplitContainer
+        var content = new TableLayoutPanel
         {
             Dock = DockStyle.Fill,
-            FixedPanel = FixedPanel.Panel2,
-            SplitterDistance = 700
+            ColumnCount = 2,
+            RowCount = 1
         };
+        content.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 70));
+        content.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30));
 
         _grid.Dock = DockStyle.Fill;
         _grid.AutoGenerateColumns = false;
@@ -79,9 +81,16 @@ public sealed class CategoryManagementControl : UserControl
         form.Controls.Add(deleteButton);
         form.Controls.Add(refreshButton);
 
-        split.Panel1.Controls.Add(_grid);
-        split.Panel2.Controls.Add(form);
-        Controls.Add(split);
+        var formHost = new Panel
+        {
+            Dock = DockStyle.Fill,
+            AutoScroll = true
+        };
+        formHost.Controls.Add(form);
+
+        content.Controls.Add(_grid, 0, 0);
+        content.Controls.Add(formHost, 1, 0);
+        Controls.Add(content);
     }
 
     private async Task LoadCategoriesAsync()

@@ -34,7 +34,7 @@ public sealed class MainForm : Form
 
         Text = "小型商超 POS 系统";
         StartPosition = FormStartPosition.CenterScreen;
-        MinimumSize = new Size(1100, 720);
+        MinimumSize = new Size(1180, 760);
         Size = new Size(1280, 800);
         Font = new Font("Microsoft YaHei UI", 9F);
 
@@ -88,6 +88,7 @@ public sealed class MainForm : Form
         {
             Dock = DockStyle.Fill,
             FlowDirection = FlowDirection.TopDown,
+            AutoScroll = true,
             WrapContents = false
         };
 

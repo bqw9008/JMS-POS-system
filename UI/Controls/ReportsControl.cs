@@ -55,7 +55,7 @@ public sealed class ReportsControl : UserControl
             Dock = DockStyle.Top,
             AutoSize = true,
             Padding = new Padding(0, 0, 0, 12),
-            WrapContents = false
+            WrapContents = true
         };
 
         _fromPicker.Format = DateTimePickerFormat.Short;
@@ -79,6 +79,7 @@ public sealed class ReportsControl : UserControl
         {
             Dock = DockStyle.Top,
             ColumnCount = 5,
+            RowCount = 1,
             AutoSize = true,
             Padding = new Padding(0, 0, 0, 14)
         };
@@ -200,7 +201,8 @@ public sealed class ReportsControl : UserControl
         var card = new Panel
         {
             Dock = DockStyle.Fill,
-            Height = 88,
+            Height = 96,
+            MinimumSize = new Size(150, 96),
             BackColor = Color.White,
             Margin = new Padding(0, 0, 10, 0),
             Padding = new Padding(14)

@@ -30,12 +30,14 @@ public sealed class InventoryManagementControl : UserControl
 
     private void BuildLayout()
     {
-        var split = new SplitContainer
+        var content = new TableLayoutPanel
         {
             Dock = DockStyle.Fill,
-            FixedPanel = FixedPanel.Panel2,
-            SplitterDistance = 760
+            ColumnCount = 2,
+            RowCount = 1
         };
+        content.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 72));
+        content.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 28));
 
         _grid.Dock = DockStyle.Fill;
         _grid.AutoGenerateColumns = false;
@@ -74,9 +76,16 @@ public sealed class InventoryManagementControl : UserControl
         form.Controls.Add(CreateButton("直接设置库存", async (_, _) => await SetStockAsync()));
         form.Controls.Add(CreateButton("刷新", async (_, _) => await LoadAsync()));
 
-        split.Panel1.Controls.Add(_grid);
-        split.Panel2.Controls.Add(form);
-        Controls.Add(split);
+        var formHost = new Panel
+        {
+            Dock = DockStyle.Fill,
+            AutoScroll = true
+        };
+        formHost.Controls.Add(form);
+
+        content.Controls.Add(_grid, 0, 0);
+        content.Controls.Add(formHost, 1, 0);
+        Controls.Add(content);
     }
 
     private async Task LoadAsync()
