@@ -11,6 +11,8 @@ public sealed class MainForm : Form
     private readonly IProductService _productService;
     private readonly IInventoryService _inventoryService;
     private readonly ICashierService _cashierService;
+    private readonly IOrderService _orderService;
+    private readonly IReportService _reportService;
     private readonly Panel _contentPanel = new();
 
     public MainForm(
@@ -18,13 +20,17 @@ public sealed class MainForm : Form
         ICategoryService categoryService,
         IProductService productService,
         IInventoryService inventoryService,
-        ICashierService cashierService)
+        ICashierService cashierService,
+        IOrderService orderService,
+        IReportService reportService)
     {
         _modules = modules;
         _categoryService = categoryService;
         _productService = productService;
         _inventoryService = inventoryService;
         _cashierService = cashierService;
+        _orderService = orderService;
+        _reportService = reportService;
 
         Text = "小型商超 POS 系统";
         StartPosition = FormStartPosition.CenterScreen;
@@ -129,6 +135,8 @@ public sealed class MainForm : Form
             "categories" => new CategoryManagementControl(_categoryService),
             "products" => new ProductManagementControl(_productService, _categoryService),
             "inventory" => new InventoryManagementControl(_inventoryService, _productService),
+            "orders" => new SalesRecordControl(_orderService),
+            "reports" => new ReportsControl(_reportService),
             _ => new ModulePlaceholderControl(module)
         };
     }

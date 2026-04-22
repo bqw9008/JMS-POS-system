@@ -17,6 +17,8 @@ public static class AppCompositionRoot
     private static readonly IProductService ProductService = new ProductService(ConnectionFactory);
     private static readonly IInventoryService InventoryService = new InventoryService(ConnectionFactory);
     private static readonly ICashierService CashierService = new CashierService(ConnectionFactory);
+    private static readonly IOrderService OrderService = new OrderService(ConnectionFactory);
+    private static readonly IReportService ReportService = new ReportService(ConnectionFactory);
 
     public static async Task InitializeAsync(CancellationToken cancellationToken = default)
     {
@@ -25,7 +27,7 @@ public static class AppCompositionRoot
 
     public static MainForm CreateMainForm()
     {
-        return new MainForm(CreateModules(), CategoryService, ProductService, InventoryService, CashierService);
+        return new MainForm(CreateModules(), CategoryService, ProductService, InventoryService, CashierService, OrderService, ReportService);
     }
 
     private static IReadOnlyList<ModuleDefinition> CreateModules()

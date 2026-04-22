@@ -17,16 +17,18 @@ The basics are in place:
 - Inventory viewing and adjustment
 - Cashier checkout with cart, discount, received amount, and change calculation
 - Order saving and inventory deduction
+- Sales record search with date filters, order details, and summary totals
+- Basic reports: today sales, order count, stock overview, daily/weekly/monthly sales, and product rankings
 - Low-stock indicators
 - Layered project structure
 - Database schema script
 
 Still on the way:
 
-- Sales record search
-- Reports and statistics
 - Login and roles
+- Logging and configuration screens
 - Barcode scanner and receipt printer support
+- Report export
 
 ## 🧰 Tech Stack
 
@@ -86,6 +88,14 @@ Maintain product code, name, barcode, category, cost price, sale price, low-stoc
 
 View stock levels, set stock directly, adjust by quantity, and spot low-stock items quickly.
 
+### Sales Records
+
+Search orders by date range, review order details, and see summary totals for the current result set.
+
+### Reports
+
+Review today sales metrics, stock overview, daily/weekly/monthly sales summaries, and top/slow-selling product rankings.
+
 ## 🗄️ Database
 
 SQLite is used for now to keep local setup simple. The default database file is `pos.db`.
@@ -103,15 +113,14 @@ Core tables:
 
 ### Phase 1: MVP
 
-- Finish product, category, inventory, and cashier basics
-- Add sales record search
+- Finish product, category, inventory, cashier, sales record, and basic report flows
 
 ### Phase 2: Back Office
 
-- Add basic reports
 - Add login and roles
 - Add logging
 - Add configurable store/system settings
+- Add report export
 
 ### Phase 3: Devices and Release
 
