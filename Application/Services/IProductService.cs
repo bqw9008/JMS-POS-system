@@ -10,6 +10,8 @@ public interface IProductService
 
     Task<Product?> FindByBarcodeAsync(string barcode, CancellationToken cancellationToken = default);
 
+    Task<Product?> FindByCodeOrBarcodeAsync(string input, CancellationToken cancellationToken = default);
+
     Task SaveAsync(Product product, CancellationToken cancellationToken = default);
 
     Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);

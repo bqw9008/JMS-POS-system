@@ -15,14 +15,14 @@ The basics are in place:
 - Category management
 - Product management
 - Inventory viewing and adjustment
+- Cashier checkout with cart, discount, received amount, and change calculation
+- Order saving and inventory deduction
 - Low-stock indicators
 - Layered project structure
 - Database schema script
 
 Still on the way:
 
-- Cashier checkout
-- Order saving and inventory deduction
 - Sales record search
 - Reports and statistics
 - Login and roles
@@ -70,6 +70,10 @@ POS-system-cs/
 
 ## 🧩 Current Modules
 
+### Cashier
+
+Add products by code, barcode, or a unique name match; manage the cart; apply discounts; enter received cash; calculate change; save the order and deduct inventory.
+
 ### Category Management
 
 Create, edit, list, and delete categories. Categories linked to products are protected from accidental deletion.
@@ -99,9 +103,7 @@ Core tables:
 
 ### Phase 1: MVP
 
-- Finish product, category, and inventory management
-- Add cashier checkout
-- Save orders and deduct stock
+- Finish product, category, inventory, and cashier basics
 - Add sales record search
 
 ### Phase 2: Back Office
@@ -129,4 +131,3 @@ dotnet build
 ## 📄 License
 
 MIT License. See `LICENSE` for details.
-

@@ -10,18 +10,21 @@ public sealed class MainForm : Form
     private readonly ICategoryService _categoryService;
     private readonly IProductService _productService;
     private readonly IInventoryService _inventoryService;
+    private readonly ICashierService _cashierService;
     private readonly Panel _contentPanel = new();
 
     public MainForm(
         IReadOnlyList<ModuleDefinition> modules,
         ICategoryService categoryService,
         IProductService productService,
-        IInventoryService inventoryService)
+        IInventoryService inventoryService,
+        ICashierService cashierService)
     {
         _modules = modules;
         _categoryService = categoryService;
         _productService = productService;
         _inventoryService = inventoryService;
+        _cashierService = cashierService;
 
         Text = "小型商超 POS 系统";
         StartPosition = FormStartPosition.CenterScreen;
@@ -122,6 +125,7 @@ public sealed class MainForm : Form
     {
         return module.Key switch
         {
+            "cashier" => new CashierControl(_productService, _cashierService),
             "categories" => new CategoryManagementControl(_categoryService),
             "products" => new ProductManagementControl(_productService, _categoryService),
             "inventory" => new InventoryManagementControl(_inventoryService, _productService),
