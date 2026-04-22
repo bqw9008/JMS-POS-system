@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using System.IO;
+using Microsoft.Data.Sqlite;
 
 namespace POS_system_cs.Infrastructure.Persistence;
 
@@ -159,3 +160,4 @@ public sealed class DatabaseInitializer
         return File.ReadAllText(schemaPath);
     }
 }
+

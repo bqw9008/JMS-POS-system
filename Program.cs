@@ -7,8 +7,12 @@ internal static class Program
     [STAThread]
     private static void Main()
     {
-        ApplicationConfiguration.Initialize();
+        System.Windows.Forms.Application.EnableVisualStyles();
+        System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+
         AppCompositionRoot.InitializeAsync().GetAwaiter().GetResult();
-        System.Windows.Forms.Application.Run(AppCompositionRoot.CreateMainForm());
+
+        var app = new System.Windows.Application();
+        app.Run(AppCompositionRoot.CreateMainWindow());
     }
 }

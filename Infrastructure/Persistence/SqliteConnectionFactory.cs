@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using System.IO;
+using Microsoft.Data.Sqlite;
 using POS_system_cs.Configuration;
 
 namespace POS_system_cs.Infrastructure.Persistence;
@@ -22,3 +23,4 @@ public sealed class SqliteConnectionFactory
         return new SqliteConnection($"Data Source={databasePath}");
     }
 }
+

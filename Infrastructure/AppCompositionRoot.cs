@@ -4,6 +4,7 @@ using POS_system_cs.Configuration;
 using POS_system_cs.Infrastructure.Persistence;
 using POS_system_cs.Infrastructure.Services;
 using POS_system_cs.UI.Forms;
+using POS_system_cs.UI.Wpf;
 
 namespace POS_system_cs.Infrastructure;
 
@@ -28,6 +29,11 @@ public static class AppCompositionRoot
     public static MainForm CreateMainForm()
     {
         return new MainForm(CreateModules(), CategoryService, ProductService, InventoryService, CashierService, OrderService, ReportService);
+    }
+
+    public static MainWindow CreateMainWindow()
+    {
+        return new MainWindow(CreateModules(), CategoryService, ProductService, InventoryService, CashierService, OrderService, ReportService);
     }
 
     private static IReadOnlyList<ModuleDefinition> CreateModules()

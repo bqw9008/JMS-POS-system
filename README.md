@@ -10,12 +10,13 @@ This is still an early-stage project, so the focus is on a clean foundation rath
 
 The basics are in place:
 
-- WinForms desktop app shell
+- WPF desktop shell with native WPF pages for the current main modules
+- Built-in English / Simplified Chinese UI switch
 - Local SQLite database setup on first launch
 - Category management
 - Product management
 - Inventory viewing and adjustment
-- Cashier checkout with cart, discount, received amount, and change calculation
+- Native WPF cashier checkout with cart, discount, split cash/online payment, and change calculation
 - Order saving and inventory deduction
 - Sales record search with date filters, order details, and summary totals
 - Basic reports: today sales, order count, stock overview, daily/weekly/monthly sales, and product rankings
@@ -34,7 +35,8 @@ Still on the way:
 
 - C#
 - .NET 9
-- WinForms
+- WPF shell and module pages
+- WinForms code kept temporarily as a migration fallback
 - SQLite
 - Microsoft.Data.Sqlite
 
@@ -67,6 +69,16 @@ dotnet run
 
 Unset the variable or set it to `0` for normal use.
 
+## 🌐 Language
+
+The desktop UI supports English and Simplified Chinese. Use the language selector in the left navigation area to switch languages while the app is running.
+
+Current behavior:
+
+- The default language is Simplified Chinese.
+- Switching languages refreshes the current WPF page and navigation text.
+- The selected language is not persisted yet, so restarting the app returns to the default language.
+
 ## 🗂️ Project Layout
 
 ```text
@@ -76,7 +88,7 @@ POS-system-cs/
 ├── Data/                 # Database scripts
 ├── Domain/               # Entities and enums
 ├── Infrastructure/       # SQLite access, service implementations, composition root
-├── UI/                   # WinForms screens and controls
+├── UI/                   # WPF shell and module pages; legacy WinForms controls are still kept during migration
 ├── Program.cs            # App entry point
 ├── TODO.md               # Development checklist
 └── POS-system-cs.csproj  # Project file
@@ -84,9 +96,11 @@ POS-system-cs/
 
 ## 🧩 Current Modules
 
+The app can switch between English and Simplified Chinese from the left navigation area.
+
 ### Cashier
 
-Add products by code, barcode, or a unique name match; manage the cart; use cashier shortcuts including one-shot quantity editing; apply discounts; record cash or online payments in multiple steps with remaining amount and change calculation; use F7 for cash and F8 for online payment; save the order and deduct inventory.
+The cashier page is native WPF. Add products by code, barcode, or a unique name match; manage the cart; use shortcuts including one-shot quantity editing; apply discounts; record cash or online payments in multiple steps with remaining amount and change calculation; use F7 for cash and F8 for online payment; save the order and deduct inventory.
 
 ### Category Management
 
@@ -152,11 +166,4 @@ dotnet build
 ## 📄 License
 
 MIT License. See `LICENSE` for details.
-
-
-
-
-
-
-
 
