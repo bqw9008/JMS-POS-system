@@ -1,30 +1,34 @@
-﻿# 小型商超 POS 系统（C#）
+﻿# POS System for Small Retail Stores (C#)
 
-一个面向小型商超内部使用的 Windows 桌面 POS 系统。当前目标是先完成单机版最小可用流程，再逐步扩展前台收银、销售记录、统计报表、扫码枪和小票打印能力。
+Language: English | [简体中文](README.zh-CN.md)
 
-## 当前状态
+A small Windows desktop POS app for neighborhood shops, convenience stores, and other small retail scenarios. It starts simple: keep products organized, track stock, and build toward a cashier flow that actually works end to end.
 
-项目目前处于基础框架与后台基础资料管理阶段，已完成：
+This is still an early-stage project, so the focus is on a clean foundation rather than feature overload.
 
-- WinForms 桌面应用框架
-- SQLite 本地数据库初始化
-- 商品分类管理
-- 商品基础资料管理
-- 库存查看与调整
-- 低库存标识
-- 基础分层目录结构
-- 数据库建表脚本
+## ✅ What Works Now
 
-暂未完成：
+The basics are in place:
 
-- 前台收银完整流程
-- 订单生成与库存扣减联动
-- 销售记录查询
-- 统计报表
-- 登录与权限
-- 扫码枪和小票打印接入
+- WinForms desktop app shell
+- Local SQLite database setup on first launch
+- Category management
+- Product management
+- Inventory viewing and adjustment
+- Low-stock indicators
+- Layered project structure
+- Database schema script
 
-## 技术栈
+Still on the way:
+
+- Cashier checkout
+- Order saving and inventory deduction
+- Sales record search
+- Reports and statistics
+- Login and roles
+- Barcode scanner and receipt printer support
+
+## 🧰 Tech Stack
 
 - C#
 - .NET 9
@@ -32,12 +36,12 @@
 - SQLite
 - Microsoft.Data.Sqlite
 
-## 运行环境
+## 💻 Requirements
 
 - Windows
 - .NET 9 SDK
 
-## 快速开始
+## 🚀 Quick Start
 
 ```powershell
 git clone <your-repo-url>
@@ -47,52 +51,42 @@ dotnet build
 dotnet run
 ```
 
-程序首次启动时会自动在输出目录创建本地 SQLite 数据库，并执行 `Data/schema.sql` 中的建表脚本。
+The app creates a local SQLite database the first time it runs. The table schema lives in `Data/schema.sql`.
 
-## 项目结构
+## 🗂️ Project Layout
 
 ```text
 POS-system-cs/
-├── Application/          # 应用层：服务接口、导航定义、应用模型
-├── Configuration/        # 配置模型
-├── Data/                 # 数据库脚本
-├── Domain/               # 领域实体与枚举
-├── Infrastructure/       # 基础设施：SQLite、服务实现、组合根
-├── UI/                   # WinForms 界面
-├── Program.cs            # 应用入口
-├── TODO.md               # 开发计划
-└── POS-system-cs.csproj  # 项目文件
+├── Application/          # App-level models, navigation, and service interfaces
+├── Configuration/        # App settings models
+├── Data/                 # Database scripts
+├── Domain/               # Entities and enums
+├── Infrastructure/       # SQLite access, service implementations, composition root
+├── UI/                   # WinForms screens and controls
+├── Program.cs            # App entry point
+├── TODO.md               # Development checklist
+└── POS-system-cs.csproj  # Project file
 ```
 
-## 已有模块
+## 🧩 Current Modules
 
-### 分类管理
+### Category Management
 
-- 分类列表展示
-- 新增分类
-- 编辑分类
-- 删除分类
-- 分类关联商品时禁止删除
+Create, edit, list, and delete categories. Categories linked to products are protected from accidental deletion.
 
-### 商品管理
+### Product Management
 
-- 商品列表展示
-- 商品搜索
-- 新增商品
-- 编辑商品
-- 商品停用
-- 商品条码、分类、进价、售价、库存预警值维护
+Maintain product code, name, barcode, category, cost price, sale price, low-stock threshold, and active status.
 
-### 库存管理
+### Inventory Management
 
-- 库存列表查看
-- 直接设置库存
-- 按增减数量调整库存
-- 低库存提示
+View stock levels, set stock directly, adjust by quantity, and spot low-stock items quickly.
 
-## 数据库
+## 🗄️ Database
 
-当前使用 SQLite，本地数据库默认文件名为 `pos.db`。核心表包括：
+SQLite is used for now to keep local setup simple. The default database file is `pos.db`.
+
+Core tables:
 
 - `categories`
 - `products`
@@ -101,41 +95,38 @@ POS-system-cs/
 - `orders`
 - `order_items`
 
-建表脚本位于 `Data/schema.sql`。
+## 🛣️ Roadmap
 
-## 开发路线
+### Phase 1: MVP
 
-### Phase 1：最小可用版本
+- Finish product, category, and inventory management
+- Add cashier checkout
+- Save orders and deduct stock
+- Add sales record search
 
-- 完成商品、分类、库存基础管理
-- 完成前台收银主流程
-- 完成订单保存与库存扣减
-- 完成销售记录查询
+### Phase 2: Back Office
 
-### Phase 2：后台完善
+- Add basic reports
+- Add login and roles
+- Add logging
+- Add configurable store/system settings
 
-- 基础统计报表
-- 登录与角色区分
-- 日志记录
-- 配置管理
+### Phase 3: Devices and Release
 
-### Phase 3：设备与部署
+- Support barcode scanners
+- Support receipt printing
+- Prepare deployment package
+- Polish the UI
 
-- 扫码枪适配
-- 小票打印
-- 安装部署
-- 界面优化
+## 🤝 Contributing
 
-## 贡献
-
-当前项目仍处于早期阶段，建议先从 `TODO.md` 中的 P0 任务开始推进。提交代码前请确保：
+The project is young, so `TODO.md` is the best place to see what still needs work. Before opening a PR or committing changes, make sure the project builds:
 
 ```powershell
 dotnet build
 ```
 
-可以通过。
+## 📄 License
 
-## License
+MIT License. See `LICENSE` for details.
 
-This project is licensed under the MIT License. See `LICENSE` for details.
