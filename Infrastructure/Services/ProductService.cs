@@ -160,17 +160,27 @@ public sealed class ProductService : IProductService
     {
         await using var connection = _connectionFactory.CreateConnection();
         await connection.OpenAsync(cancellationToken);
+        await using var transaction = await connection.BeginTransactionAsync(cancellationToken);
 
-        await using var command = connection.CreateCommand();
-        command.CommandText = """
-            UPDATE products
-            SET is_active = 0,
-                updated_at = $updatedAt
-            WHERE id = $id;
-            """;
-        command.Parameters.AddWithValue("$id", id.ToString());
-        command.Parameters.AddWithValue("$updatedAt", DateTime.Now.ToString("O"));
-        await command.ExecuteNonQueryAsync(cancellationToken);
+        try
+        {
+            var hasSales = await HasSalesAsync(connection, (SqliteTransaction)transaction, id, cancellationToken);
+            if (hasSales)
+            {
+                await DisableProductAsync(connection, (SqliteTransaction)transaction, id, cancellationToken);
+            }
+            else
+            {
+                await DeleteProductAsync(connection, (SqliteTransaction)transaction, id, cancellationToken);
+            }
+
+            await transaction.CommitAsync(cancellationToken);
+        }
+        catch
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            throw;
+        }
     }
 
     private static async Task CreateInitialStockAsync(SqliteConnection connection, SqliteTransaction transaction, Guid productId, CancellationToken cancellationToken)
@@ -194,6 +204,47 @@ public sealed class ProductService : IProductService
         command.CommandText = "SELECT COUNT(1) FROM products WHERE id = $id;";
         command.Parameters.AddWithValue("$id", id.ToString());
         return Convert.ToInt32(await command.ExecuteScalarAsync(cancellationToken)) > 0;
+    }
+
+    private static async Task<bool> HasSalesAsync(SqliteConnection connection, SqliteTransaction transaction, Guid id, CancellationToken cancellationToken)
+    {
+        await using var command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText = "SELECT COUNT(1) FROM order_items WHERE product_id = $id;";
+        command.Parameters.AddWithValue("$id", id.ToString());
+        return Convert.ToInt32(await command.ExecuteScalarAsync(cancellationToken)) > 0;
+    }
+
+    private static async Task DisableProductAsync(SqliteConnection connection, SqliteTransaction transaction, Guid id, CancellationToken cancellationToken)
+    {
+        await using var command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText = """
+            UPDATE products
+            SET is_active = 0,
+                updated_at = $updatedAt
+            WHERE id = $id;
+            """;
+        command.Parameters.AddWithValue("$id", id.ToString());
+        command.Parameters.AddWithValue("$updatedAt", DateTime.Now.ToString("O"));
+        await command.ExecuteNonQueryAsync(cancellationToken);
+    }
+
+    private static async Task DeleteProductAsync(SqliteConnection connection, SqliteTransaction transaction, Guid id, CancellationToken cancellationToken)
+    {
+        await using (var stockCommand = connection.CreateCommand())
+        {
+            stockCommand.Transaction = transaction;
+            stockCommand.CommandText = "DELETE FROM stock WHERE product_id = $id;";
+            stockCommand.Parameters.AddWithValue("$id", id.ToString());
+            await stockCommand.ExecuteNonQueryAsync(cancellationToken);
+        }
+
+        await using var productCommand = connection.CreateCommand();
+        productCommand.Transaction = transaction;
+        productCommand.CommandText = "DELETE FROM products WHERE id = $id;";
+        productCommand.Parameters.AddWithValue("$id", id.ToString());
+        await productCommand.ExecuteNonQueryAsync(cancellationToken);
     }
 
     private static Product ReadProduct(SqliteDataReader reader)

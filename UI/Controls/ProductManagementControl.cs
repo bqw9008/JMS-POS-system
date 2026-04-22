@@ -108,7 +108,7 @@ public sealed class ProductManagementControl : UserControl
         form.Controls.Add(_lowStockBox);
         form.Controls.Add(_isActiveCheckBox);
         form.Controls.Add(CreateButton("保存", async (_, _) => await SaveAsync()));
-        form.Controls.Add(CreateButton("停用", async (_, _) => await DisableAsync()));
+        form.Controls.Add(CreateButton("删除/停用", async (_, _) => await DeleteOrDisableAsync()));
 
         var formHost = new Panel
         {
@@ -181,14 +181,14 @@ public sealed class ProductManagementControl : UserControl
         }
     }
 
-    private async Task DisableAsync()
+    private async Task DeleteOrDisableAsync()
     {
         if (_selectedProduct is null)
         {
             return;
         }
 
-        if (MessageBox.Show("确认停用当前商品？", "确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+        if (MessageBox.Show("确认处理当前商品？未产生销售记录的商品会被删除；已有销售记录的商品会被停用。", "确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
         {
             return;
         }

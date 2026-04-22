@@ -46,7 +46,7 @@ Still on the way:
 ## 🚀 Quick Start
 
 ```powershell
-git clone <your-repo-url>
+git clone https://github.com/bqw9008/JMS-POS-system.git
 cd POS-system-cs
 dotnet restore
 dotnet build
@@ -54,6 +54,18 @@ dotnet run
 ```
 
 The app creates a local SQLite database the first time it runs. The table schema lives in `Data/schema.sql`.
+
+
+## 🧪 Test Data
+
+Test data is not inserted by default. To seed sample categories, products, and stock while developing, enable it before running the app:
+
+```powershell
+$env:POS_SEED_TEST_DATA = "1"
+dotnet run
+```
+
+Unset the variable or set it to `0` for normal use.
 
 ## 🗂️ Project Layout
 
@@ -74,7 +86,7 @@ POS-system-cs/
 
 ### Cashier
 
-Add products by code, barcode, or a unique name match; manage the cart; apply discounts; enter received cash; calculate change; save the order and deduct inventory.
+Add products by code, barcode, or a unique name match; manage the cart; use cashier shortcuts including one-shot quantity editing; apply discounts; record cash or online payments in multiple steps with remaining amount and change calculation; use F7 for cash and F8 for online payment; save the order and deduct inventory.
 
 ### Category Management
 
@@ -82,7 +94,7 @@ Create, edit, list, and delete categories. Categories linked to products are pro
 
 ### Product Management
 
-Maintain product code, name, barcode, category, cost price, sale price, low-stock threshold, and active status.
+Maintain product code, name, barcode, category, cost price, sale price, low-stock threshold, active status, and safe delete/disable behavior.
 
 ### Inventory Management
 
@@ -140,3 +152,11 @@ dotnet build
 ## 📄 License
 
 MIT License. See `LICENSE` for details.
+
+
+
+
+
+
+
+
