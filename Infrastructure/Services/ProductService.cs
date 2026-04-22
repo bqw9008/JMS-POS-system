@@ -71,6 +71,30 @@ public sealed class ProductService : IProductService
         return await reader.ReadAsync(cancellationToken) ? ReadProduct(reader) : null;
     }
 
+    public async Task<Product?> FindByCodeOrBarcodeAsync(string input, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+        {
+            return null;
+        }
+
+        await using var connection = _connectionFactory.CreateConnection();
+        await connection.OpenAsync(cancellationToken);
+
+        await using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT id, code, name, barcode, category_id, cost_price, sale_price,
+                   low_stock_threshold, is_active, created_at, updated_at
+            FROM products
+            WHERE is_active = 1
+              AND (code = $input OR barcode = $input);
+            """;
+        command.Parameters.AddWithValue("$input", input.Trim());
+
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+        return await reader.ReadAsync(cancellationToken) ? ReadProduct(reader) : null;
+    }
+
     public async Task SaveAsync(Product product, CancellationToken cancellationToken = default)
     {
         Validate(product);
