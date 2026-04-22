@@ -1,0 +1,49 @@
+﻿# Build output
+bin/
+obj/
+out/
+publish/
+artifacts/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio / Rider / ReSharper
+.vs/
+.idea/
+_ReSharper*/
+*.DotSettings.user
+
+# .NET generated files
+TestResults/
+*.nupkg
+*.snupkg
+coverage/
+coverage.xml
+*.coverage
+*.coveragexml
+
+# Local databases and runtime data
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Environment files
+.env
+.env.*
+!.env.example
