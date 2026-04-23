@@ -8,14 +8,14 @@
         </Grid.RowDefinitions>
 
         <StackPanel Margin="0,0,0,14">
-            <TextBlock x:Name="TitleText" FontSize="24" FontWeight="Bold" Foreground="#1F2A2E" />
-            <TextBlock x:Name="DescriptionText" Foreground="#5B6969" TextWrapping="Wrap" Margin="0,4,0,0" />
+            <TextBlock x:Name="TitleText" Style="{StaticResource PageTitleTextStyle}" />
+            <TextBlock x:Name="DescriptionText" Style="{StaticResource DescriptionTextStyle}" />
         </StackPanel>
 
-        <Border Grid.Row="1" Padding="18" Background="#FCFAF4" BorderBrush="#DAE0D7" BorderThickness="1" CornerRadius="18">
+        <Border Grid.Row="1" Style="{StaticResource CardBorderStyle}" Padding="18">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel MaxWidth="860" HorizontalAlignment="Left">
-                    <TextBlock x:Name="ReadOnlyNoticeText" Foreground="#5B6969" TextWrapping="Wrap" Margin="0,0,0,18" />
+                    <TextBlock x:Name="ReadOnlyNoticeText" Foreground="{StaticResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,0,0,18" />
 
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -32,25 +32,25 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <TextBlock x:Name="StoreNameLabel" Foreground="#5B6969" Margin="0,0,16,12" />
+                        <TextBlock x:Name="StoreNameLabel" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,16,12" />
                         <TextBox x:Name="StoreNameBox" Grid.Column="1" IsReadOnly="True" Height="36" Margin="0,0,0,12" VerticalContentAlignment="Center" Padding="10,0" />
 
-                        <TextBlock x:Name="DatabasePathLabel" Grid.Row="1" Foreground="#5B6969" Margin="0,0,16,12" />
+                        <TextBlock x:Name="DatabasePathLabel" Grid.Row="1" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,16,12" />
                         <TextBox x:Name="DatabasePathBox" Grid.Row="1" Grid.Column="1" IsReadOnly="True" Height="36" Margin="0,0,0,12" VerticalContentAlignment="Center" Padding="10,0" />
 
-                        <TextBlock x:Name="ReceiptPrinterLabel" Grid.Row="2" Foreground="#5B6969" Margin="0,0,16,12" />
+                        <TextBlock x:Name="ReceiptPrinterLabel" Grid.Row="2" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,16,12" />
                         <TextBox x:Name="ReceiptPrinterBox" Grid.Row="2" Grid.Column="1" IsReadOnly="True" Height="36" Margin="0,0,0,12" VerticalContentAlignment="Center" Padding="10,0" />
 
-                        <TextBlock x:Name="CurrentLanguageLabel" Grid.Row="3" Foreground="#5B6969" Margin="0,0,16,12" />
+                        <TextBlock x:Name="CurrentLanguageLabel" Grid.Row="3" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,16,12" />
                         <TextBox x:Name="CurrentLanguageBox" Grid.Row="3" Grid.Column="1" IsReadOnly="True" Height="36" Margin="0,0,0,12" VerticalContentAlignment="Center" Padding="10,0" />
 
-                        <TextBlock x:Name="LanguageSettingsPathLabel" Grid.Row="4" Foreground="#5B6969" Margin="0,0,16,12" />
+                        <TextBlock x:Name="LanguageSettingsPathLabel" Grid.Row="4" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,16,12" />
                         <TextBox x:Name="LanguageSettingsPathBox" Grid.Row="4" Grid.Column="1" IsReadOnly="True" Height="36" Margin="0,0,0,12" VerticalContentAlignment="Center" Padding="10,0" />
 
-                        <TextBlock x:Name="LogDirectoryLabel" Grid.Row="5" Foreground="#5B6969" Margin="0,0,16,12" />
+                        <TextBlock x:Name="LogDirectoryLabel" Grid.Row="5" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,16,12" />
                         <TextBox x:Name="LogDirectoryBox" Grid.Row="5" Grid.Column="1" IsReadOnly="True" Height="36" Margin="0,0,0,12" VerticalContentAlignment="Center" Padding="10,0" />
 
-                        <TextBlock x:Name="RuntimeDirectoryLabel" Grid.Row="6" Foreground="#5B6969" Margin="0,0,16,0" />
+                        <TextBlock x:Name="RuntimeDirectoryLabel" Grid.Row="6" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,16,0" />
                         <TextBox x:Name="RuntimeDirectoryBox" Grid.Row="6" Grid.Column="1" IsReadOnly="True" Height="36" VerticalContentAlignment="Center" Padding="10,0" />
                     </Grid>
                 </StackPanel>
@@ -58,3 +58,5 @@
         </Border>
     </Grid>
 </UserControl>
+
+

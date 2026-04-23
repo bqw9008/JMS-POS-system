@@ -5,7 +5,7 @@
         Height="210"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
-        Background="#FAF8F1"
+        Background="{StaticResource ShellBackgroundBrush}"
         FontFamily="Microsoft YaHei UI">
     <Grid Margin="18">
         <Grid.RowDefinitions>
@@ -16,7 +16,7 @@
 
         <TextBlock x:Name="ProductText"
                    FontSize="15"
-                   Foreground="#1F2A2E"
+                   Foreground="{StaticResource TextBrush}"
                    TextTrimming="CharacterEllipsis" />
         <TextBox x:Name="QuantityBox"
                  Grid.Row="1"
@@ -32,8 +32,8 @@
                     Margin="8,0,0,0"
                     Padding="12,0"
                     BorderThickness="0"
-                    Background="#52796F"
-                    Foreground="#FCFAF4"
+                    Background="{StaticResource PrimaryBrush}"
+                    Foreground="{StaticResource PrimaryForegroundBrush}"
                     IsDefault="True"
                     Click="OkButton_Click" />
             <Button x:Name="CancelButton"
@@ -41,11 +41,13 @@
                     Height="34"
                     Margin="8,0,0,0"
                     Padding="12,0"
-                    BorderBrush="#DAE0D7"
+                    BorderBrush="{StaticResource BorderSoftBrush}"
                     BorderThickness="1"
-                    Background="#ECF1E8"
-                    Foreground="#1F2A2E"
+                    Background="{StaticResource SecondaryButtonBrush}"
+                    Foreground="{StaticResource TextBrush}"
                     IsCancel="True" />
         </StackPanel>
     </Grid>
 </Window>
+
+

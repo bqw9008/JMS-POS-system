@@ -2,34 +2,15 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using POS_system_cs.Application.Services;
 using POS_system_cs.Domain.Enums;
 using POS_system_cs.UI.Wpf.Localization;
-using MediaColor = System.Windows.Media.Color;
 
 namespace POS_system_cs.UI.Wpf.Controls;
 
 internal static class WpfUi
 {
     private static IAppLogger? Logger { get; set; }
-
-    public static readonly MediaColor AppBackground = MediaColor.FromRgb(237, 241, 235);
-    public static readonly MediaColor ShellBackground = MediaColor.FromRgb(250, 248, 241);
-    public static readonly MediaColor CardBackground = MediaColor.FromRgb(252, 250, 244);
-    public static readonly MediaColor SubtleBackground = MediaColor.FromRgb(244, 246, 239);
-    public static readonly MediaColor BorderColor = MediaColor.FromRgb(218, 224, 215);
-    public static readonly MediaColor TextColor = MediaColor.FromRgb(31, 42, 46);
-    public static readonly MediaColor MutedTextColor = MediaColor.FromRgb(91, 105, 105);
-    public static readonly MediaColor PrimaryColor = MediaColor.FromRgb(82, 121, 111);
-    public static readonly MediaColor SecondaryButtonColor = MediaColor.FromRgb(236, 241, 232);
-    public static readonly MediaColor DangerBackground = MediaColor.FromRgb(252, 239, 235);
-    public static readonly MediaColor DangerText = MediaColor.FromRgb(157, 62, 48);
-    public static readonly MediaColor NavStart = MediaColor.FromRgb(224, 234, 224);
-    public static readonly MediaColor NavEnd = MediaColor.FromRgb(205, 221, 213);
-    public static readonly MediaColor NavButtonBackground = MediaColor.FromRgb(239, 244, 236);
-
-    public static SolidColorBrush Brush(MediaColor color) => new(color);
 
     public static void ConfigureLogger(IAppLogger logger)
     {

@@ -101,7 +101,7 @@ POS-system-cs/
 ├── Domain/               # 领域实体与枚举
 ├── Infrastructure/       # SQLite 访问、服务实现、组合根
 ├── UI/
-│   ├── Wpf/              # 当前基于 XAML 的 WPF 主壳、模块页面与本地化
+│   ├── Wpf/              # 当前基于 XAML 的 WPF 主壳、共享样式、模块页面与本地化
 │   └── LegacyWinForms/   # 已归档的旧 WinForms 主壳和控件
 ├── Program.cs            # 应用入口
 ├── TODO.md               # 开发清单

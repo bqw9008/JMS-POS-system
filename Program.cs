@@ -11,6 +11,10 @@ internal static class Program
         System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 
         var app = new System.Windows.Application();
+        app.Resources.MergedDictionaries.Add(new System.Windows.ResourceDictionary
+        {
+            Source = new Uri("UI/Wpf/Styles.xaml", UriKind.Relative)
+        });
         RegisterGlobalExceptionLogging(app);
 
         try

@@ -101,7 +101,7 @@ POS-system-cs/
 ├── Domain/               # Entities and enums
 ├── Infrastructure/       # SQLite access, service implementations, composition root
 ├── UI/
-│   ├── Wpf/              # Current XAML-based WPF shell, module pages, and localization
+│   ├── Wpf/              # Current XAML-based WPF shell, shared styles, module pages, and localization
 │   └── LegacyWinForms/   # Archived legacy WinForms shell and controls
 ├── Program.cs            # App entry point
 ├── TODO.md               # Development checklist

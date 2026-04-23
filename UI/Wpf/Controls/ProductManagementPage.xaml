@@ -9,13 +9,13 @@
 
         <DockPanel Margin="0,0,0,14">
             <StackPanel MinWidth="260" Margin="0,0,18,0">
-                <TextBlock x:Name="TitleText" FontSize="24" FontWeight="Bold" Foreground="#1F2A2E" />
-                <TextBlock x:Name="DescriptionText" Foreground="#5B6969" TextWrapping="Wrap" Margin="0,4,0,0" />
+                <TextBlock x:Name="TitleText" Style="{StaticResource PageTitleTextStyle}" />
+                <TextBlock x:Name="DescriptionText" Style="{StaticResource DescriptionTextStyle}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <TextBox x:Name="KeywordBox" Width="260" Height="38" Padding="10,0" VerticalContentAlignment="Center" />
-                <Button x:Name="SearchButton" Height="34" MinWidth="76" Margin="8,0,0,0" Padding="14,0" BorderThickness="0" Background="#52796F" Foreground="#FCFAF4" Click="SearchButton_Click" />
-                <Button x:Name="NewButton" Height="34" MinWidth="76" Margin="8,0,0,0" Padding="14,0" Background="#ECF1E8" Foreground="#1F2A2E" Click="NewButton_Click" />
+                <Button x:Name="SearchButton" Style="{StaticResource CompactPrimaryButtonStyle}" Click="SearchButton_Click" />
+                <Button x:Name="NewButton" Style="{StaticResource CompactSecondaryButtonStyle}" Click="NewButton_Click" />
             </StackPanel>
         </DockPanel>
 
@@ -25,7 +25,7 @@
                 <ColumnDefinition Width="330" />
             </Grid.ColumnDefinitions>
 
-            <Border Margin="0,0,16,0" Padding="16" Background="#FCFAF4" BorderBrush="#DAE0D7" BorderThickness="1" CornerRadius="18">
+            <Border Margin="0,0,16,0" Style="{StaticResource CardBorderStyle}">
                 <DataGrid x:Name="ProductGrid"
                           AutoGenerateColumns="False"
                           CanUserAddRows="False"
@@ -37,36 +37,38 @@
                           RowHeight="40"
                           ColumnHeaderHeight="40"
                           GridLinesVisibility="Horizontal"
-                          Background="#FCFAF4"
+                          Background="{StaticResource CardBackgroundBrush}"
                           BorderThickness="0"
                           FontSize="13.5"
                           SelectionChanged="ProductGrid_SelectionChanged" />
             </Border>
 
-            <Border Grid.Column="1" Padding="16" Background="#FCFAF4" BorderBrush="#DAE0D7" BorderThickness="1" CornerRadius="18">
+            <Border Grid.Column="1" Style="{StaticResource CardBorderStyle}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <TextBlock x:Name="FormTitleText" FontSize="18" FontWeight="Bold" Foreground="#1F2A2E" Margin="0,0,0,12" />
-                        <TextBlock x:Name="CodeLabel" Foreground="#5B6969" Margin="0,0,0,5" />
+                        <TextBlock x:Name="FormTitleText" Style="{StaticResource FormTitleTextStyle}" />
+                        <TextBlock x:Name="CodeLabel" Style="{StaticResource FieldLabelTextStyle}" />
                         <TextBox x:Name="CodeBox" Height="38" Padding="10,0" VerticalContentAlignment="Center" Margin="0,0,0,10" />
-                        <TextBlock x:Name="NameLabel" Foreground="#5B6969" Margin="0,0,0,5" />
+                        <TextBlock x:Name="NameLabel" Style="{StaticResource FieldLabelTextStyle}" />
                         <TextBox x:Name="NameBox" Height="38" Padding="10,0" VerticalContentAlignment="Center" Margin="0,0,0,10" />
-                        <TextBlock x:Name="BarcodeLabel" Foreground="#5B6969" Margin="0,0,0,5" />
+                        <TextBlock x:Name="BarcodeLabel" Style="{StaticResource FieldLabelTextStyle}" />
                         <TextBox x:Name="BarcodeBox" Height="38" Padding="10,0" VerticalContentAlignment="Center" Margin="0,0,0,10" />
-                        <TextBlock x:Name="CategoryLabel" Foreground="#5B6969" Margin="0,0,0,5" />
+                        <TextBlock x:Name="CategoryLabel" Style="{StaticResource FieldLabelTextStyle}" />
                         <ComboBox x:Name="CategoryComboBox" Height="38" Padding="8,0" VerticalContentAlignment="Center" Margin="0,0,0,10" />
-                        <TextBlock x:Name="CostLabel" Foreground="#5B6969" Margin="0,0,0,5" />
+                        <TextBlock x:Name="CostLabel" Style="{StaticResource FieldLabelTextStyle}" />
                         <TextBox x:Name="CostBox" Height="38" Padding="10,0" VerticalContentAlignment="Center" Margin="0,0,0,10" />
-                        <TextBlock x:Name="PriceLabel" Foreground="#5B6969" Margin="0,0,0,5" />
+                        <TextBlock x:Name="PriceLabel" Style="{StaticResource FieldLabelTextStyle}" />
                         <TextBox x:Name="PriceBox" Height="38" Padding="10,0" VerticalContentAlignment="Center" Margin="0,0,0,10" />
-                        <TextBlock x:Name="LowStockLabel" Foreground="#5B6969" Margin="0,0,0,5" />
+                        <TextBlock x:Name="LowStockLabel" Style="{StaticResource FieldLabelTextStyle}" />
                         <TextBox x:Name="LowStockBox" Height="38" Padding="10,0" VerticalContentAlignment="Center" Margin="0,0,0,10" />
                         <CheckBox x:Name="ActiveCheckBox" IsChecked="True" Margin="0,0,0,8" />
-                        <Button x:Name="SaveButton" Height="40" MinWidth="110" Margin="0,8,0,0" Padding="14,0" BorderThickness="0" Background="#52796F" Foreground="#FCFAF4" Click="SaveButton_Click" />
-                        <Button x:Name="DeleteButton" Height="40" MinWidth="110" Margin="0,8,0,0" Padding="14,0" Background="#FCEFEB" Foreground="#9D3E30" Click="DeleteButton_Click" />
+                        <Button x:Name="SaveButton" Style="{StaticResource PrimaryButtonStyle}" Click="SaveButton_Click" />
+                        <Button x:Name="DeleteButton" Style="{StaticResource DangerButtonStyle}" Click="DeleteButton_Click" />
                     </StackPanel>
                 </ScrollViewer>
             </Border>
         </Grid>
     </Grid>
 </UserControl>
+
+

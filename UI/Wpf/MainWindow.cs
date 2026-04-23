@@ -91,15 +91,7 @@ public sealed partial class MainWindow : Window
         {
             Content = Localizer.ModuleTitle(module.Key),
             Tag = module.Key,
-            Height = 44,
-            HorizontalContentAlignment = System.Windows.HorizontalAlignment.Left,
-            Margin = new Thickness(0, 0, 0, 8),
-            Padding = new Thickness(16, 0, 12, 0),
-            FontSize = 14,
-            Foreground = WpfUi.Brush(WpfUi.TextColor),
-            Background = WpfUi.Brush(WpfUi.NavButtonBackground),
-            BorderThickness = new Thickness(0),
-            Cursor = System.Windows.Input.Cursors.Hand
+            Style = (Style)FindResource("NavigationButtonStyle")
         };
 
         button.Click += (_, _) => ShowModule(module);
@@ -130,14 +122,12 @@ public sealed partial class MainWindow : Window
         _currentModule = module;
         foreach (var button in _navigationButtons.Values)
         {
-            button.Background = WpfUi.Brush(WpfUi.NavButtonBackground);
-            button.Foreground = WpfUi.Brush(WpfUi.TextColor);
+            button.Style = (Style)FindResource("NavigationButtonStyle");
         }
 
         if (_navigationButtons.TryGetValue(module.Key, out var activeButton))
         {
-            activeButton.Background = WpfUi.Brush(WpfUi.PrimaryColor);
-            activeButton.Foreground = WpfUi.Brush(WpfUi.CardBackground);
+            activeButton.Style = (Style)FindResource("ActiveNavigationButtonStyle");
         }
 
         ContentHost.Content = CreateModuleContent(module);
