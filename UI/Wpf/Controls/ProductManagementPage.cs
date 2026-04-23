@@ -1,95 +1,66 @@
-using System.Collections.ObjectModel;
-using System.Windows;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using POS_system_cs.Application.Services;
 using POS_system_cs.Domain.Entities;
 using POS_system_cs.UI.Wpf.Localization;
-using WpfCheckBox = System.Windows.Controls.CheckBox;
-using WpfComboBox = System.Windows.Controls.ComboBox;
-using WpfDataGrid = System.Windows.Controls.DataGrid;
-using WpfTextBox = System.Windows.Controls.TextBox;
 using WpfUserControl = System.Windows.Controls.UserControl;
 
 namespace POS_system_cs.UI.Wpf.Controls;
 
-public sealed class ProductManagementPage : WpfUserControl
+public sealed partial class ProductManagementPage : WpfUserControl
 {
     private readonly IProductService _products;
     private readonly ICategoryService _categoriesService;
     private readonly ObservableCollection<Product> _rows = [];
     private readonly ObservableCollection<Category> _categories = [];
-    private readonly WpfDataGrid _grid = WpfUi.Grid();
-    private readonly WpfTextBox _keyword = WpfUi.TextBox();
-    private readonly WpfTextBox _code = WpfUi.TextBox();
-    private readonly WpfTextBox _name = WpfUi.TextBox();
-    private readonly WpfTextBox _barcode = WpfUi.TextBox();
-    private readonly WpfComboBox _category = WpfUi.Combo();
-    private readonly WpfTextBox _cost = WpfUi.TextBox();
-    private readonly WpfTextBox _price = WpfUi.TextBox();
-    private readonly WpfTextBox _lowStock = WpfUi.TextBox();
-    private readonly WpfCheckBox _active = new() { Content = Localizer.T("Field.Active"), IsChecked = true };
     private Product? _selected;
 
     public ProductManagementPage(IProductService products, ICategoryService categoriesService)
     {
         _products = products;
         _categoriesService = categoriesService;
-        Content = Build();
+        InitializeComponent();
+        ApplyLocalization();
+        BuildGrid();
+        BuildForm();
         Loaded += async (_, _) => await LoadAsync();
     }
 
-    private Grid Build()
+    private void ApplyLocalization()
     {
-        var root = new Grid { Margin = new Thickness(22) };
-        root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-        root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+        TitleText.Text = Localizer.T("Product.Title");
+        DescriptionText.Text = Localizer.T("Product.Desc");
+        SearchButton.Content = Localizer.T("Action.Search");
+        NewButton.Content = Localizer.T("Action.New");
+        FormTitleText.Text = Localizer.T("Product.Form");
+        CodeLabel.Text = Localizer.T("Field.Code");
+        NameLabel.Text = Localizer.T("Field.Name");
+        BarcodeLabel.Text = Localizer.T("Field.Barcode");
+        CategoryLabel.Text = Localizer.T("Field.Category");
+        CostLabel.Text = Localizer.T("Field.Cost");
+        PriceLabel.Text = Localizer.T("Field.Price");
+        LowStockLabel.Text = Localizer.T("Field.LowStock");
+        ActiveCheckBox.Content = Localizer.T("Field.Active");
+        SaveButton.Content = Localizer.T("Action.Save");
+        DeleteButton.Content = Localizer.T("Action.DeleteDisable");
+    }
 
-        var toolbar = new DockPanel { Margin = new Thickness(0, 0, 0, 14) };
-        toolbar.Children.Add(WpfUi.Header(Localizer.T("Product.Title"), Localizer.T("Product.Desc")));
-        var actions = new StackPanel { Orientation = System.Windows.Controls.Orientation.Horizontal, HorizontalAlignment = System.Windows.HorizontalAlignment.Right };
-        _keyword.Width = 260;
-        actions.Children.Add(_keyword);
-        actions.Children.Add(WpfUi.Primary(Localizer.T("Action.Search"), async (_, _) => await LoadProductsAsync(), compact: true));
-        actions.Children.Add(WpfUi.Secondary(Localizer.T("Action.New"), (_, _) => Clear(), compact: true));
-        toolbar.Children.Add(actions);
-        root.Children.Add(toolbar);
+    private void BuildGrid()
+    {
+        ProductGrid.ItemsSource = _rows;
+        ProductGrid.Columns.Add(WpfUi.TextColumn(Localizer.T("Field.Code"), nameof(Product.Code), 110));
+        ProductGrid.Columns.Add(WpfUi.TextColumn(Localizer.T("Field.Name"), nameof(Product.Name), star: true));
+        ProductGrid.Columns.Add(WpfUi.TextColumn(Localizer.T("Field.Barcode"), nameof(Product.Barcode), 140));
+        ProductGrid.Columns.Add(WpfUi.MoneyColumn(Localizer.T("Field.Price"), nameof(Product.SalePrice), 90));
+        ProductGrid.Columns.Add(WpfUi.MoneyColumn(Localizer.T("Field.Low"), nameof(Product.LowStockThreshold), 80));
+        ProductGrid.Columns.Add(WpfUi.CheckColumn(Localizer.T("Field.Active"), nameof(Product.IsActive), 80));
+    }
 
-        var content = new Grid();
-        content.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        content.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(330) });
-        Grid.SetRow(content, 1);
-        root.Children.Add(content);
-
-        _grid.ItemsSource = _rows;
-        _grid.Columns.Add(WpfUi.TextColumn(Localizer.T("Field.Code"), nameof(Product.Code), 110));
-        _grid.Columns.Add(WpfUi.TextColumn(Localizer.T("Field.Name"), nameof(Product.Name), star: true));
-        _grid.Columns.Add(WpfUi.TextColumn(Localizer.T("Field.Barcode"), nameof(Product.Barcode), 140));
-        _grid.Columns.Add(WpfUi.MoneyColumn(Localizer.T("Field.Price"), nameof(Product.SalePrice), 90));
-        _grid.Columns.Add(WpfUi.MoneyColumn(Localizer.T("Field.Low"), nameof(Product.LowStockThreshold), 80));
-        _grid.Columns.Add(WpfUi.CheckColumn(Localizer.T("Field.Active"), nameof(Product.IsActive), 80));
-        _grid.SelectionChanged += (_, _) => Bind();
-        content.Children.Add(WpfUi.Card(_grid, new Thickness(0, 0, 16, 0)));
-
-        _category.ItemsSource = _categories;
-        _category.DisplayMemberPath = nameof(Category.Name);
-        _category.SelectedValuePath = nameof(Category.Id);
-
-        var form = WpfUi.Form();
-        form.Children.Add(WpfUi.Title(Localizer.T("Product.Form")));
-        form.Children.Add(WpfUi.Field(Localizer.T("Field.Code"), _code));
-        form.Children.Add(WpfUi.Field(Localizer.T("Field.Name"), _name));
-        form.Children.Add(WpfUi.Field(Localizer.T("Field.Barcode"), _barcode));
-        form.Children.Add(WpfUi.Field(Localizer.T("Field.Category"), _category));
-        form.Children.Add(WpfUi.Field(Localizer.T("Field.Cost"), _cost));
-        form.Children.Add(WpfUi.Field(Localizer.T("Field.Price"), _price));
-        form.Children.Add(WpfUi.Field(Localizer.T("Field.LowStock"), _lowStock));
-        form.Children.Add(_active);
-        form.Children.Add(WpfUi.Primary(Localizer.T("Action.Save"), async (_, _) => await SaveAsync()));
-        form.Children.Add(WpfUi.Danger(Localizer.T("Action.DeleteDisable"), async (_, _) => await DeleteAsync()));
-        var formCard = WpfUi.Card(new ScrollViewer { Content = form }, new Thickness(0));
-        Grid.SetColumn(formCard, 1);
-        content.Children.Add(formCard);
-        return root;
+    private void BuildForm()
+    {
+        CategoryComboBox.ItemsSource = _categories;
+        CategoryComboBox.DisplayMemberPath = nameof(Category.Name);
+        CategoryComboBox.SelectedValuePath = nameof(Category.Id);
     }
 
     private async Task LoadAsync()
@@ -106,7 +77,7 @@ public sealed class ProductManagementPage : WpfUserControl
 
     private async Task LoadProductsAsync()
     {
-        try { _rows.ReplaceWith(await _products.SearchAsync(_keyword.Text)); }
+        try { _rows.ReplaceWith(await _products.SearchAsync(KeywordBox.Text)); }
         catch (Exception ex) { WpfUi.Error(this, ex); }
     }
 
@@ -115,14 +86,14 @@ public sealed class ProductManagementPage : WpfUserControl
         try
         {
             var row = _selected ?? new Product();
-            row.Code = _code.Text.Trim();
-            row.Name = _name.Text.Trim();
-            row.Barcode = _barcode.Text.Trim();
-            row.CategoryId = _category.SelectedValue is Guid id ? id : Guid.Empty;
-            row.CostPrice = WpfUi.Number(_cost.Text);
-            row.SalePrice = WpfUi.Number(_price.Text);
-            row.LowStockThreshold = WpfUi.Number(_lowStock.Text);
-            row.IsActive = _active.IsChecked == true;
+            row.Code = CodeBox.Text.Trim();
+            row.Name = NameBox.Text.Trim();
+            row.Barcode = BarcodeBox.Text.Trim();
+            row.CategoryId = CategoryComboBox.SelectedValue is Guid id ? id : Guid.Empty;
+            row.CostPrice = WpfUi.Number(CostBox.Text);
+            row.SalePrice = WpfUi.Number(PriceBox.Text);
+            row.LowStockThreshold = WpfUi.Number(LowStockBox.Text);
+            row.IsActive = ActiveCheckBox.IsChecked == true;
             await _products.SaveAsync(row);
             await LoadProductsAsync();
             Clear();
@@ -144,29 +115,39 @@ public sealed class ProductManagementPage : WpfUserControl
 
     private void Bind()
     {
-        if (_grid.SelectedItem is not Product row) return;
+        if (ProductGrid.SelectedItem is not Product row) return;
         _selected = row;
-        _code.Text = row.Code;
-        _name.Text = row.Name;
-        _barcode.Text = row.Barcode;
-        _category.SelectedValue = row.CategoryId;
-        _cost.Text = row.CostPrice.ToString("N2");
-        _price.Text = row.SalePrice.ToString("N2");
-        _lowStock.Text = row.LowStockThreshold.ToString("N2");
-        _active.IsChecked = row.IsActive;
+        CodeBox.Text = row.Code;
+        NameBox.Text = row.Name;
+        BarcodeBox.Text = row.Barcode;
+        CategoryComboBox.SelectedValue = row.CategoryId;
+        CostBox.Text = row.CostPrice.ToString("N2");
+        PriceBox.Text = row.SalePrice.ToString("N2");
+        LowStockBox.Text = row.LowStockThreshold.ToString("N2");
+        ActiveCheckBox.IsChecked = row.IsActive;
     }
 
     private void Clear()
     {
         _selected = null;
-        _grid.SelectedItem = null;
-        _code.Clear();
-        _name.Clear();
-        _barcode.Clear();
-        _cost.Text = "0.00";
-        _price.Text = "0.00";
-        _lowStock.Text = "0.00";
-        _active.IsChecked = true;
-        _category.SelectedIndex = _categories.Count > 0 ? 0 : -1;
+        ProductGrid.SelectedItem = null;
+        CodeBox.Clear();
+        NameBox.Clear();
+        BarcodeBox.Clear();
+        CostBox.Text = "0.00";
+        PriceBox.Text = "0.00";
+        LowStockBox.Text = "0.00";
+        ActiveCheckBox.IsChecked = true;
+        CategoryComboBox.SelectedIndex = _categories.Count > 0 ? 0 : -1;
     }
+
+    private void ProductGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) => Bind();
+
+    private async void SearchButton_Click(object sender, System.Windows.RoutedEventArgs e) => await LoadProductsAsync();
+
+    private void NewButton_Click(object sender, System.Windows.RoutedEventArgs e) => Clear();
+
+    private async void SaveButton_Click(object sender, System.Windows.RoutedEventArgs e) => await SaveAsync();
+
+    private async void DeleteButton_Click(object sender, System.Windows.RoutedEventArgs e) => await DeleteAsync();
 }

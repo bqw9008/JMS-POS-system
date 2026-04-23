@@ -47,3 +47,6 @@ Desktop.ini
 .env
 .env.*
 !.env.example
+
+# Local AI/session context
+context.md

@@ -4,17 +4,12 @@ using POS_system_cs.UI.Wpf.Controls;
 using POS_system_cs.UI.Wpf.Localization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using MediaBrushes = System.Windows.Media.Brushes;
-using MediaColor = System.Windows.Media.Color;
-using MediaFontFamily = System.Windows.Media.FontFamily;
 using WpfButton = System.Windows.Controls.Button;
-using WpfComboBox = System.Windows.Controls.ComboBox;
 using WpfComboBoxItem = System.Windows.Controls.ComboBoxItem;
 
 namespace POS_system_cs.UI.Wpf;
 
-public sealed class MainWindow : Window
+public sealed partial class MainWindow : Window
 {
     private readonly IReadOnlyList<ModuleDefinition> _modules;
     private readonly ICategoryService _categoryService;
@@ -23,9 +18,8 @@ public sealed class MainWindow : Window
     private readonly ICashierService _cashierService;
     private readonly IOrderService _orderService;
     private readonly IReportService _reportService;
-    private readonly ContentControl _contentHost = new();
+    private readonly Action<AppLanguage> _saveLanguage;
     private readonly Dictionary<string, WpfButton> _navigationButtons = [];
-    private readonly TextBlock _subtitleText = new();
     private ModuleDefinition? _currentModule;
 
     public MainWindow(
@@ -35,7 +29,8 @@ public sealed class MainWindow : Window
         IInventoryService inventoryService,
         ICashierService cashierService,
         IOrderService orderService,
-        IReportService reportService)
+        IReportService reportService,
+        Action<AppLanguage> saveLanguage)
     {
         _modules = modules;
         _categoryService = categoryService;
@@ -44,128 +39,42 @@ public sealed class MainWindow : Window
         _cashierService = cashierService;
         _orderService = orderService;
         _reportService = reportService;
+        _saveLanguage = saveLanguage;
 
-        Title = Localizer.T("App.Title");
-        Width = 1320;
-        Height = 840;
-        MinWidth = 1180;
-        MinHeight = 760;
-        WindowStartupLocation = WindowStartupLocation.CenterScreen;
-        Background = new SolidColorBrush(MediaColor.FromRgb(242, 245, 249));
-        FontFamily = new MediaFontFamily("Microsoft YaHei UI");
-
-        Content = BuildLayout();
+        InitializeComponent();
+        ApplyLocalization();
+        BuildLanguageSelector();
+        BuildNavigationButtons();
         ShowModule(_modules[0]);
     }
 
-    private Grid BuildLayout()
+    private void ApplyLocalization()
     {
-        var root = new Grid();
-        root.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(236) });
-        root.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-
-        var navigation = BuildNavigation();
-        Grid.SetColumn(navigation, 0);
-        root.Children.Add(navigation);
-
-        var contentShell = new Border
-        {
-            Margin = new Thickness(18),
-            Padding = new Thickness(0),
-            Background = MediaBrushes.White,
-            CornerRadius = new CornerRadius(18),
-            BorderBrush = new SolidColorBrush(MediaColor.FromRgb(226, 232, 240)),
-            BorderThickness = new Thickness(1),
-            Child = _contentHost
-        };
-        Grid.SetColumn(contentShell, 1);
-        root.Children.Add(contentShell);
-
-        return root;
+        Title = Localizer.T("App.Title");
+        SubtitleText.Text = Localizer.T("App.Subtitle");
     }
 
-    private Border BuildNavigation()
+    private void BuildLanguageSelector()
     {
-        var panel = new StackPanel { Margin = new Thickness(16, 20, 16, 20) };
+        LanguageSelector.Items.Clear();
+        LanguageSelector.Items.Add(new WpfComboBoxItem { Content = Localizer.T("Chinese"), Tag = AppLanguage.Chinese });
+        LanguageSelector.Items.Add(new WpfComboBoxItem { Content = Localizer.T("English"), Tag = AppLanguage.English });
+        LanguageSelector.SelectedValue = Localizer.Current;
+    }
 
-        panel.Children.Add(new TextBlock
-        {
-            Text = "POS System",
-            FontSize = 24,
-            FontWeight = FontWeights.Bold,
-            Foreground = MediaBrushes.White,
-            Margin = new Thickness(6, 0, 6, 4)
-        });
-
-        _subtitleText.Text = Localizer.T("App.Subtitle");
-        _subtitleText.FontSize = 12;
-        _subtitleText.Foreground = new SolidColorBrush(MediaColor.FromRgb(203, 213, 225));
-        _subtitleText.Margin = new Thickness(6, 0, 6, 24);
-        panel.Children.Add(_subtitleText);
-
-        panel.Children.Add(BuildLanguageSelector());
+    private void BuildNavigationButtons()
+    {
+        NavigationItemsPanel.Children.Clear();
+        _navigationButtons.Clear();
 
         foreach (var module in _modules)
         {
             var button = CreateNavigationButton(module);
             _navigationButtons[module.Key] = button;
-            panel.Children.Add(button);
+            NavigationItemsPanel.Children.Add(button);
         }
-
-        var scrollViewer = new ScrollViewer
-        {
-            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-            Content = panel
-        };
-
-        return new Border
-        {
-            Background = new LinearGradientBrush(
-                MediaColor.FromRgb(15, 23, 42),
-                MediaColor.FromRgb(30, 41, 59),
-                90),
-            Child = scrollViewer
-        };
     }
 
-
-    private WpfComboBox BuildLanguageSelector()
-    {
-        var selector = new WpfComboBox
-        {
-            Margin = new Thickness(0, 0, 0, 18),
-            Height = 34,
-            SelectedValuePath = "Tag",
-            DisplayMemberPath = "Content"
-        };
-        selector.Items.Add(new WpfComboBoxItem { Content = Localizer.T("Chinese"), Tag = AppLanguage.Chinese });
-        selector.Items.Add(new WpfComboBoxItem { Content = Localizer.T("English"), Tag = AppLanguage.English });
-        selector.SelectedValue = Localizer.Current;
-        selector.SelectionChanged += (_, _) =>
-        {
-            if (selector.SelectedValue is not AppLanguage language || language == Localizer.Current)
-            {
-                return;
-            }
-
-            Localizer.SetLanguage(language);
-            Title = Localizer.T("App.Title");
-            _subtitleText.Text = Localizer.T("App.Subtitle");
-            foreach (var module in _modules)
-            {
-                if (_navigationButtons.TryGetValue(module.Key, out var button))
-                {
-                    button.Content = Localizer.ModuleTitle(module.Key);
-                }
-            }
-
-            if (_currentModule is not null)
-            {
-                ShowModule(_currentModule);
-            }
-        };
-        return selector;
-    }
     private WpfButton CreateNavigationButton(ModuleDefinition module)
     {
         var button = new WpfButton
@@ -177,8 +86,8 @@ public sealed class MainWindow : Window
             Margin = new Thickness(0, 0, 0, 8),
             Padding = new Thickness(16, 0, 12, 0),
             FontSize = 14,
-            Foreground = new SolidColorBrush(MediaColor.FromRgb(226, 232, 240)),
-            Background = new SolidColorBrush(MediaColor.FromArgb(40, 255, 255, 255)),
+            Foreground = WpfUi.Brush(WpfUi.TextColor),
+            Background = WpfUi.Brush(WpfUi.NavButtonBackground),
             BorderThickness = new Thickness(0),
             Cursor = System.Windows.Input.Cursors.Hand
         };
@@ -187,22 +96,41 @@ public sealed class MainWindow : Window
         return button;
     }
 
+    private void LanguageSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (LanguageSelector.SelectedValue is not AppLanguage language || language == Localizer.Current)
+        {
+            return;
+        }
+
+        Localizer.SetLanguage(language);
+        _saveLanguage(language);
+        ApplyLocalization();
+        BuildLanguageSelector();
+        BuildNavigationButtons();
+
+        if (_currentModule is not null)
+        {
+            ShowModule(_currentModule);
+        }
+    }
+
     private void ShowModule(ModuleDefinition module)
     {
         _currentModule = module;
         foreach (var button in _navigationButtons.Values)
         {
-            button.Background = new SolidColorBrush(MediaColor.FromArgb(40, 255, 255, 255));
-            button.Foreground = new SolidColorBrush(MediaColor.FromRgb(226, 232, 240));
+            button.Background = WpfUi.Brush(WpfUi.NavButtonBackground);
+            button.Foreground = WpfUi.Brush(WpfUi.TextColor);
         }
 
         if (_navigationButtons.TryGetValue(module.Key, out var activeButton))
         {
-            activeButton.Background = new SolidColorBrush(MediaColor.FromRgb(37, 99, 235));
-            activeButton.Foreground = MediaBrushes.White;
+            activeButton.Background = WpfUi.Brush(WpfUi.PrimaryColor);
+            activeButton.Foreground = WpfUi.Brush(WpfUi.CardBackground);
         }
 
-        _contentHost.Content = CreateModuleContent(module);
+        ContentHost.Content = CreateModuleContent(module);
     }
 
     private object CreateModuleContent(ModuleDefinition module)
@@ -219,7 +147,3 @@ public sealed class MainWindow : Window
         };
     }
 }
-
-
-
-

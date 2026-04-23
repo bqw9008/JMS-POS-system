@@ -1,57 +1,47 @@
-using System.Collections.ObjectModel;
-using System.Windows;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using POS_system_cs.Application.Services;
 using POS_system_cs.Domain.Entities;
 using POS_system_cs.UI.Wpf.Localization;
-using WpfCheckBox = System.Windows.Controls.CheckBox;
-using WpfDataGrid = System.Windows.Controls.DataGrid;
-using WpfTextBox = System.Windows.Controls.TextBox;
 using WpfUserControl = System.Windows.Controls.UserControl;
 
 namespace POS_system_cs.UI.Wpf.Controls;
 
-public sealed class CategoryManagementPage : WpfUserControl
+public sealed partial class CategoryManagementPage : WpfUserControl
 {
     private readonly ICategoryService _service;
     private readonly ObservableCollection<Category> _rows = [];
-    private readonly WpfDataGrid _grid = WpfUi.Grid();
-    private readonly WpfTextBox _name = WpfUi.TextBox();
-    private readonly WpfTextBox _description = WpfUi.TextBox(multiline: true);
-    private readonly WpfCheckBox _active = new() { Content = Localizer.T("Field.Active"), IsChecked = true };
     private Category? _selected;
 
     public CategoryManagementPage(ICategoryService service)
     {
         _service = service;
-        Content = WpfUi.SplitPage(Localizer.T("Category.Title"), Localizer.T("Category.Desc"), out var list, out var form);
-        BuildList(list);
-        BuildForm(form);
+        InitializeComponent();
+        ApplyLocalization();
+        BuildList();
         Loaded += async (_, _) => await LoadAsync();
     }
 
-    private void BuildList(Border host)
+    private void ApplyLocalization()
     {
-        _grid.ItemsSource = _rows;
-        _grid.Columns.Add(WpfUi.TextColumn(Localizer.T("Field.Name"), nameof(Category.Name), star: true));
-        _grid.Columns.Add(WpfUi.TextColumn(Localizer.T("Field.Description"), nameof(Category.Description), 240));
-        _grid.Columns.Add(WpfUi.CheckColumn(Localizer.T("Field.Active"), nameof(Category.IsActive), 80));
-        _grid.SelectionChanged += (_, _) => Bind();
-        host.Child = _grid;
+        TitleText.Text = Localizer.T("Category.Title");
+        DescriptionText.Text = Localizer.T("Category.Desc");
+        FormTitleText.Text = Localizer.T("Category.Form");
+        NameLabel.Text = Localizer.T("Field.Name");
+        DescriptionLabel.Text = Localizer.T("Field.Description");
+        ActiveCheckBox.Content = Localizer.T("Field.Active");
+        SaveButton.Content = Localizer.T("Action.Save");
+        NewButton.Content = Localizer.T("Action.New");
+        DeleteButton.Content = Localizer.T("Action.Delete");
+        RefreshButton.Content = Localizer.T("Action.Refresh");
     }
 
-    private void BuildForm(Border host)
+    private void BuildList()
     {
-        var form = WpfUi.Form();
-        form.Children.Add(WpfUi.Title(Localizer.T("Category.Form")));
-        form.Children.Add(WpfUi.Field(Localizer.T("Field.Name"), _name));
-        form.Children.Add(WpfUi.Field(Localizer.T("Field.Description"), _description));
-        form.Children.Add(_active);
-        form.Children.Add(WpfUi.Primary(Localizer.T("Action.Save"), async (_, _) => await SaveAsync()));
-        form.Children.Add(WpfUi.Secondary(Localizer.T("Action.New"), (_, _) => Clear()));
-        form.Children.Add(WpfUi.Danger(Localizer.T("Action.Delete"), async (_, _) => await DeleteAsync()));
-        form.Children.Add(WpfUi.Secondary(Localizer.T("Action.Refresh"), async (_, _) => await LoadAsync()));
-        host.Child = new ScrollViewer { Content = form };
+        CategoryGrid.ItemsSource = _rows;
+        CategoryGrid.Columns.Add(WpfUi.TextColumn(Localizer.T("Field.Name"), nameof(Category.Name), star: true));
+        CategoryGrid.Columns.Add(WpfUi.TextColumn(Localizer.T("Field.Description"), nameof(Category.Description), 240));
+        CategoryGrid.Columns.Add(WpfUi.CheckColumn(Localizer.T("Field.Active"), nameof(Category.IsActive), 80));
     }
 
     private async Task LoadAsync()
@@ -65,9 +55,9 @@ public sealed class CategoryManagementPage : WpfUserControl
         try
         {
             var row = _selected ?? new Category();
-            row.Name = _name.Text.Trim();
-            row.Description = _description.Text.Trim();
-            row.IsActive = _active.IsChecked == true;
+            row.Name = NameBox.Text.Trim();
+            row.Description = DescriptionBox.Text.Trim();
+            row.IsActive = ActiveCheckBox.IsChecked == true;
             await _service.SaveAsync(row);
             await LoadAsync();
             Clear();
@@ -89,19 +79,29 @@ public sealed class CategoryManagementPage : WpfUserControl
 
     private void Bind()
     {
-        if (_grid.SelectedItem is not Category row) return;
+        if (CategoryGrid.SelectedItem is not Category row) return;
         _selected = row;
-        _name.Text = row.Name;
-        _description.Text = row.Description ?? string.Empty;
-        _active.IsChecked = row.IsActive;
+        NameBox.Text = row.Name;
+        DescriptionBox.Text = row.Description ?? string.Empty;
+        ActiveCheckBox.IsChecked = row.IsActive;
     }
 
     private void Clear()
     {
         _selected = null;
-        _grid.SelectedItem = null;
-        _name.Clear();
-        _description.Clear();
-        _active.IsChecked = true;
+        CategoryGrid.SelectedItem = null;
+        NameBox.Clear();
+        DescriptionBox.Clear();
+        ActiveCheckBox.IsChecked = true;
     }
+
+    private void CategoryGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) => Bind();
+
+    private async void SaveButton_Click(object sender, System.Windows.RoutedEventArgs e) => await SaveAsync();
+
+    private void NewButton_Click(object sender, System.Windows.RoutedEventArgs e) => Clear();
+
+    private async void DeleteButton_Click(object sender, System.Windows.RoutedEventArgs e) => await DeleteAsync();
+
+    private async void RefreshButton_Click(object sender, System.Windows.RoutedEventArgs e) => await LoadAsync();
 }

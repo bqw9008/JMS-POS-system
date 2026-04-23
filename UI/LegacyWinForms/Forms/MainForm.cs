@@ -141,4 +141,18 @@ public sealed class MainForm : Form
             _ => new ModulePlaceholderControl(module)
         };
     }
+
+    /// <summary>
+    /// Required method for Designer support - do not modify
+    /// the contents of this method with the code editor.
+    /// </summary>
+    private void InitializeComponent()
+    {
+        SuspendLayout();
+        // 
+        // MainForm
+        // 
+        ClientSize = new System.Drawing.Size(757, 660);
+        ResumeLayout(false);
+    }
 }

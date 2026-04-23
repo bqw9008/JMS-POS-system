@@ -5,6 +5,8 @@ using POS_system_cs.Infrastructure.Persistence;
 using POS_system_cs.Infrastructure.Services;
 using POS_system_cs.UI.Forms;
 using POS_system_cs.UI.Wpf;
+using POS_system_cs.UI.Wpf.Controls;
+using POS_system_cs.UI.Wpf.Localization;
 
 namespace POS_system_cs.Infrastructure;
 
@@ -13,6 +15,8 @@ public static class AppCompositionRoot
     private static readonly AppSettings Settings = new();
     private static readonly SqliteConnectionFactory ConnectionFactory = new(Settings);
     private static readonly DatabaseInitializer DatabaseInitializer = new(ConnectionFactory);
+    private static readonly LanguagePreferenceService LanguagePreferenceService = new();
+    private static readonly IAppLogger AppLogger = new FileAppLogger();
 
     private static readonly ICategoryService CategoryService = new CategoryService(ConnectionFactory);
     private static readonly IProductService ProductService = new ProductService(ConnectionFactory);
@@ -21,9 +25,26 @@ public static class AppCompositionRoot
     private static readonly IOrderService OrderService = new OrderService(ConnectionFactory);
     private static readonly IReportService ReportService = new ReportService(ConnectionFactory);
 
+    public static IAppLogger Logger => AppLogger;
+
     public static async Task InitializeAsync(CancellationToken cancellationToken = default)
     {
-        await DatabaseInitializer.InitializeAsync(cancellationToken);
+        AppLogger.Info("Application initialization started.");
+        WpfUi.ConfigureLogger(AppLogger);
+
+        try
+        {
+            Localizer.SetLanguage(LanguagePreferenceService.LoadLanguageOrSystemDefault());
+            AppLogger.Info($"Language initialized: {Localizer.Current}.");
+
+            await DatabaseInitializer.InitializeAsync(cancellationToken);
+            AppLogger.Info("Database initialization completed.");
+        }
+        catch (Exception ex)
+        {
+            AppLogger.Error("Application initialization failed.", ex);
+            throw;
+        }
     }
 
     public static MainForm CreateMainForm()
@@ -33,7 +54,15 @@ public static class AppCompositionRoot
 
     public static MainWindow CreateMainWindow()
     {
-        return new MainWindow(CreateModules(), CategoryService, ProductService, InventoryService, CashierService, OrderService, ReportService);
+        return new MainWindow(
+            CreateModules(),
+            CategoryService,
+            ProductService,
+            InventoryService,
+            CashierService,
+            OrderService,
+            ReportService,
+            LanguagePreferenceService.SaveLanguage);
     }
 
     private static IReadOnlyList<ModuleDefinition> CreateModules()

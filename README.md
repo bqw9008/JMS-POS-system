@@ -12,6 +12,7 @@ The basics are in place:
 
 - WPF desktop shell with native WPF pages for the current main modules
 - Built-in English / Simplified Chinese UI switch
+- Basic local file logging for startup, initialization, and unexpected errors
 - Local SQLite database setup on first launch
 - Category management
 - Product management
@@ -27,7 +28,7 @@ The basics are in place:
 Still on the way:
 
 - Login and roles
-- Logging and configuration screens
+- Configuration screens
 - Barcode scanner and receipt printer support
 - Report export
 
@@ -35,8 +36,8 @@ Still on the way:
 
 - C#
 - .NET 9
-- WPF shell and module pages
-- WinForms code kept temporarily as a migration fallback
+- XAML-based WPF shell and module pages
+- Archived WinForms UI code kept separately as a migration fallback/reference
 - SQLite
 - Microsoft.Data.Sqlite
 
@@ -57,6 +58,16 @@ dotnet run
 
 The app creates a local SQLite database the first time it runs. The table schema lives in `Data/schema.sql`.
 
+## 🪵 Logs
+
+Basic application logs are written per user under:
+
+```text
+%LOCALAPPDATA%\POS-system-cs\logs\app-YYYYMMDD.log
+```
+
+The current logging covers startup, language/database initialization, unexpected app errors, and WPF operation failures.
+
 
 ## 🧪 Test Data
 
@@ -75,9 +86,9 @@ The desktop UI supports English and Simplified Chinese. Use the language selecto
 
 Current behavior:
 
-- The default language is Simplified Chinese.
+- On first launch, the app follows the system UI language when possible: Chinese systems use Simplified Chinese, other systems use English.
 - Switching languages refreshes the current WPF page and navigation text.
-- The selected language is not persisted yet, so restarting the app returns to the default language.
+- After the user switches languages, the selected language is persisted in the user's AppData settings and reused on restart.
 
 ## 🗂️ Project Layout
 
@@ -88,7 +99,9 @@ POS-system-cs/
 ├── Data/                 # Database scripts
 ├── Domain/               # Entities and enums
 ├── Infrastructure/       # SQLite access, service implementations, composition root
-├── UI/                   # WPF shell and module pages; legacy WinForms controls are still kept during migration
+├── UI/
+│   ├── Wpf/              # Current XAML-based WPF shell, module pages, and localization
+│   └── LegacyWinForms/   # Archived legacy WinForms shell and controls
 ├── Program.cs            # App entry point
 ├── TODO.md               # Development checklist
 └── POS-system-cs.csproj  # Project file

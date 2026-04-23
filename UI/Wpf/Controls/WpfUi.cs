@@ -1,100 +1,40 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using POS_system_cs.Application.Services;
 using POS_system_cs.Domain.Enums;
 using POS_system_cs.UI.Wpf.Localization;
-using MediaBrushes = System.Windows.Media.Brushes;
 using MediaColor = System.Windows.Media.Color;
-using WpfButton = System.Windows.Controls.Button;
-using WpfComboBox = System.Windows.Controls.ComboBox;
-using WpfControl = System.Windows.Controls.Control;
-using WpfDataGrid = System.Windows.Controls.DataGrid;
-using WpfMediaBrush = System.Windows.Media.Brush;
-using WpfTextBox = System.Windows.Controls.TextBox;
 
 namespace POS_system_cs.UI.Wpf.Controls;
 
 internal static class WpfUi
 {
-    public static Grid SplitPage(string title, string description, out Border list, out Border form, double rightWidth = 320)
+    private static IAppLogger? Logger { get; set; }
+
+    public static readonly MediaColor AppBackground = MediaColor.FromRgb(237, 241, 235);
+    public static readonly MediaColor ShellBackground = MediaColor.FromRgb(250, 248, 241);
+    public static readonly MediaColor CardBackground = MediaColor.FromRgb(252, 250, 244);
+    public static readonly MediaColor SubtleBackground = MediaColor.FromRgb(244, 246, 239);
+    public static readonly MediaColor BorderColor = MediaColor.FromRgb(218, 224, 215);
+    public static readonly MediaColor TextColor = MediaColor.FromRgb(31, 42, 46);
+    public static readonly MediaColor MutedTextColor = MediaColor.FromRgb(91, 105, 105);
+    public static readonly MediaColor PrimaryColor = MediaColor.FromRgb(82, 121, 111);
+    public static readonly MediaColor SecondaryButtonColor = MediaColor.FromRgb(236, 241, 232);
+    public static readonly MediaColor DangerBackground = MediaColor.FromRgb(252, 239, 235);
+    public static readonly MediaColor DangerText = MediaColor.FromRgb(157, 62, 48);
+    public static readonly MediaColor NavStart = MediaColor.FromRgb(224, 234, 224);
+    public static readonly MediaColor NavEnd = MediaColor.FromRgb(205, 221, 213);
+    public static readonly MediaColor NavButtonBackground = MediaColor.FromRgb(239, 244, 236);
+
+    public static SolidColorBrush Brush(MediaColor color) => new(color);
+
+    public static void ConfigureLogger(IAppLogger logger)
     {
-        var root = new Grid { Margin = new Thickness(22) };
-        root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-        root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-
-        var header = Header(title, description);
-        header.Margin = new Thickness(0, 0, 0, 14);
-        root.Children.Add(header);
-
-        var content = new Grid();
-        content.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        content.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(rightWidth) });
-        list = Card(null, new Thickness(0, 0, 16, 0));
-        form = Card(null, new Thickness(0));
-        System.Windows.Controls.Grid.SetColumn(form, 1);
-        content.Children.Add(list);
-        content.Children.Add(form);
-        System.Windows.Controls.Grid.SetRow(content, 1);
-        root.Children.Add(content);
-        return root;
+        Logger = logger;
     }
-
-    public static StackPanel Header(string title, string description)
-    {
-        var panel = new StackPanel { MinWidth = 260, Margin = new Thickness(0, 0, 18, 0) };
-        panel.Children.Add(new TextBlock { Text = title, FontSize = 24, FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(MediaColor.FromRgb(15, 23, 42)) });
-        panel.Children.Add(new TextBlock { Text = description, Foreground = new SolidColorBrush(MediaColor.FromRgb(100, 116, 139)), TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 4, 0, 0) });
-        return panel;
-    }
-
-    public static StackPanel Form() => new();
-
-    public static TextBlock Title(string text) => new()
-    {
-        Text = text,
-        FontSize = 18,
-        FontWeight = FontWeights.Bold,
-        Foreground = new SolidColorBrush(MediaColor.FromRgb(15, 23, 42)),
-        Margin = new Thickness(0, 0, 0, 12)
-    };
-
-    public static StackPanel Field(string label, WpfControl editor)
-    {
-        var panel = new StackPanel { Margin = new Thickness(0, 0, 0, 10) };
-        panel.Children.Add(new TextBlock { Text = label, Foreground = new SolidColorBrush(MediaColor.FromRgb(71, 85, 105)), Margin = new Thickness(0, 0, 0, 5) });
-        panel.Children.Add(editor);
-        return panel;
-    }
-
-    public static WpfTextBox TextBox(bool multiline = false) => new()
-    {
-        Height = multiline ? 88 : 38,
-        Padding = new Thickness(10, 0, 10, 0),
-        VerticalContentAlignment = multiline ? VerticalAlignment.Top : VerticalAlignment.Center,
-        TextWrapping = multiline ? TextWrapping.Wrap : TextWrapping.NoWrap,
-        AcceptsReturn = multiline
-    };
-
-    public static WpfComboBox Combo() => new() { Height = 38, Padding = new Thickness(8, 0, 8, 0), VerticalContentAlignment = VerticalAlignment.Center };
-
-    public static WpfDataGrid Grid() => new()
-    {
-        AutoGenerateColumns = false,
-        CanUserAddRows = false,
-        CanUserDeleteRows = false,
-        IsReadOnly = true,
-        SelectionMode = DataGridSelectionMode.Single,
-        SelectionUnit = DataGridSelectionUnit.FullRow,
-        RowHeaderWidth = 0,
-        RowHeight = 40,
-        ColumnHeaderHeight = 40,
-        GridLinesVisibility = DataGridGridLinesVisibility.Horizontal,
-        Background = MediaBrushes.White,
-        BorderThickness = new Thickness(0),
-        FontSize = 13.5
-    };
 
     public static DataGridTextColumn TextColumn(string header, string path, double width = 120, bool star = false) => new()
     {
@@ -139,65 +79,6 @@ internal static class WpfUi
         Width = new DataGridLength(width)
     };
 
-    public static Border Card(UIElement? child, Thickness margin) => new()
-    {
-        Margin = margin,
-        Padding = new Thickness(16),
-        Background = MediaBrushes.White,
-        BorderBrush = new SolidColorBrush(MediaColor.FromRgb(226, 232, 240)),
-        BorderThickness = new Thickness(1),
-        CornerRadius = new CornerRadius(18),
-        Child = child
-    };
-
-    public static Border Section(string title, UIElement child, Thickness margin)
-    {
-        var panel = new Grid();
-        panel.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-        panel.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-        panel.Children.Add(new TextBlock { Text = title, FontSize = 15, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 0, 0, 10) });
-        System.Windows.Controls.Grid.SetRow(child, 1);
-        panel.Children.Add(child);
-        return Card(panel, margin);
-    }
-
-    public static WpfButton Primary(string text, RoutedEventHandler click, bool compact = false) => Button(text, click, compact, MediaColor.FromRgb(37, 99, 235), MediaBrushes.White);
-
-    public static WpfButton Secondary(string text, RoutedEventHandler click, bool compact = false) => Button(text, click, compact, MediaColor.FromRgb(241, 245, 249), new SolidColorBrush(MediaColor.FromRgb(30, 41, 59)));
-
-    public static WpfButton Danger(string text, RoutedEventHandler click) => Button(text, click, compact: false, MediaColor.FromRgb(254, 242, 242), new SolidColorBrush(MediaColor.FromRgb(185, 28, 28)));
-
-    private static WpfButton Button(string text, RoutedEventHandler click, bool compact, MediaColor color, WpfMediaBrush foreground)
-    {
-        var button = new WpfButton
-        {
-            Content = text,
-            Height = compact ? 34 : 40,
-            MinWidth = compact ? 76 : 110,
-            Margin = compact ? new Thickness(8, 0, 0, 0) : new Thickness(0, 8, 0, 0),
-            Padding = new Thickness(14, 0, 14, 0),
-            Background = new SolidColorBrush(color),
-            Foreground = foreground,
-            Cursor = System.Windows.Input.Cursors.Hand
-        };
-        button.Click += click;
-        return button;
-    }
-
-    public static TextBlock SmallLabel(string text) => new() { Text = text, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(12, 0, 8, 0) };
-
-    public static TextBlock Metric() => new() { FontSize = 24, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 10, 0, 0) };
-
-    public static Border MetricCard(string title, TextBlock value)
-    {
-        var panel = new StackPanel();
-        panel.Children.Add(new TextBlock { Text = title, Foreground = new SolidColorBrush(MediaColor.FromRgb(100, 116, 139)) });
-        panel.Children.Add(value);
-        return Card(panel, new Thickness(0, 0, 10, 0));
-    }
-
-    public static TabItem Tab(string header, UIElement content) => new() { Header = header, Content = content, Padding = new Thickness(12, 6, 12, 6) };
-
     public static decimal Number(string? text, bool allowNegative = false)
     {
         text = text?.Trim();
@@ -213,8 +94,11 @@ internal static class WpfUi
     public static void Info(DependencyObject owner, string message) =>
         System.Windows.MessageBox.Show(Window.GetWindow(owner), message, Localizer.T("Info"), MessageBoxButton.OK, MessageBoxImage.Information);
 
-    public static void Error(DependencyObject owner, Exception ex) =>
+    public static void Error(DependencyObject owner, Exception ex)
+    {
+        Logger?.Error("UI operation failed.", ex);
         System.Windows.MessageBox.Show(Window.GetWindow(owner), ex.Message, Localizer.T("OperationFailed"), MessageBoxButton.OK, MessageBoxImage.Error);
+    }
 }
 
 internal sealed class PaymentMethodTextConverter : System.Windows.Data.IValueConverter

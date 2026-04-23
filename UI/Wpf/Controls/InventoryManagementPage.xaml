@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="POS_system_cs.UI.Wpf.Controls.InventoryManagementPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Margin="22">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Margin="0,0,0,14">
+            <TextBlock x:Name="TitleText" FontSize="24" FontWeight="Bold" Foreground="#1F2A2E" />
+            <TextBlock x:Name="DescriptionText" Foreground="#5B6969" TextWrapping="Wrap" Margin="0,4,0,0" />
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="320" />
+            </Grid.ColumnDefinitions>
+
+            <Border Margin="0,0,16,0" Padding="16" Background="#FCFAF4" BorderBrush="#DAE0D7" BorderThickness="1" CornerRadius="18">
+                <DataGrid x:Name="InventoryGrid"
+                          AutoGenerateColumns="False"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          IsReadOnly="True"
+                          SelectionMode="Single"
+                          SelectionUnit="FullRow"
+                          RowHeaderWidth="0"
+                          RowHeight="40"
+                          ColumnHeaderHeight="40"
+                          GridLinesVisibility="Horizontal"
+                          Background="#FCFAF4"
+                          BorderThickness="0"
+                          FontSize="13.5"
+                          SelectionChanged="InventoryGrid_SelectionChanged" />
+            </Border>
+
+            <Border Grid.Column="1" Padding="16" Background="#FCFAF4" BorderBrush="#DAE0D7" BorderThickness="1" CornerRadius="18">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock x:Name="FormTitleText" FontSize="18" FontWeight="Bold" Foreground="#1F2A2E" Margin="0,0,0,12" />
+                        <TextBlock x:Name="ProductLabel" Foreground="#5B6969" Margin="0,0,0,5" />
+                        <ComboBox x:Name="ProductComboBox" Height="38" Padding="8,0" VerticalContentAlignment="Center" Margin="0,0,0,10" />
+                        <TextBlock x:Name="QuantityLabel" Foreground="#5B6969" Margin="0,0,0,5" />
+                        <TextBox x:Name="QuantityBox" Height="38" Padding="10,0" VerticalContentAlignment="Center" Margin="0,0,0,10" />
+                        <TextBlock x:Name="ReasonLabel" Foreground="#5B6969" Margin="0,0,0,5" />
+                        <TextBox x:Name="ReasonBox" Height="38" Padding="10,0" VerticalContentAlignment="Center" Margin="0,0,0,10" />
+                        <Button x:Name="AdjustButton" Height="40" MinWidth="110" Margin="0,8,0,0" Padding="14,0" BorderThickness="0" Background="#52796F" Foreground="#FCFAF4" Click="AdjustButton_Click" />
+                        <Button x:Name="SetButton" Height="40" MinWidth="110" Margin="0,8,0,0" Padding="14,0" Background="#ECF1E8" Foreground="#1F2A2E" Click="SetButton_Click" />
+                        <Button x:Name="RefreshButton" Height="40" MinWidth="110" Margin="0,8,0,0" Padding="14,0" Background="#ECF1E8" Foreground="#1F2A2E" Click="RefreshButton_Click" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>
