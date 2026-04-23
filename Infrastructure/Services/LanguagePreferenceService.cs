@@ -23,6 +23,8 @@ internal sealed class LanguagePreferenceService
         return savedLanguage ?? DetectSystemLanguage();
     }
 
+    public string SettingsPath => _settingsPath;
+
     public void SaveLanguage(AppLanguage language)
     {
         try

@@ -1,5 +1,6 @@
 ﻿using POS_system_cs.Application.Navigation;
 using POS_system_cs.Application.Services;
+using POS_system_cs.Configuration;
 using POS_system_cs.UI.Wpf.Controls;
 using POS_system_cs.UI.Wpf.Localization;
 using System.Windows;
@@ -19,6 +20,9 @@ public sealed partial class MainWindow : Window
     private readonly IOrderService _orderService;
     private readonly IReportService _reportService;
     private readonly Action<AppLanguage> _saveLanguage;
+    private readonly AppSettings _settings;
+    private readonly string _languageSettingsPath;
+    private readonly string _logDirectory;
     private readonly Dictionary<string, WpfButton> _navigationButtons = [];
     private ModuleDefinition? _currentModule;
 
@@ -30,7 +34,10 @@ public sealed partial class MainWindow : Window
         ICashierService cashierService,
         IOrderService orderService,
         IReportService reportService,
-        Action<AppLanguage> saveLanguage)
+        Action<AppLanguage> saveLanguage,
+        AppSettings settings,
+        string languageSettingsPath,
+        string logDirectory)
     {
         _modules = modules;
         _categoryService = categoryService;
@@ -40,6 +47,9 @@ public sealed partial class MainWindow : Window
         _orderService = orderService;
         _reportService = reportService;
         _saveLanguage = saveLanguage;
+        _settings = settings;
+        _languageSettingsPath = languageSettingsPath;
+        _logDirectory = logDirectory;
 
         InitializeComponent();
         ApplyLocalization();
@@ -143,7 +153,9 @@ public sealed partial class MainWindow : Window
             "inventory" => new InventoryManagementPage(_inventoryService, _productService),
             "orders" => new SalesRecordPage(_orderService),
             "reports" => new ReportsPage(_reportService),
+            "settings" => new SettingsPage(_settings, _languageSettingsPath, _logDirectory),
             _ => new ModulePlaceholderPage(module)
         };
     }
 }
+

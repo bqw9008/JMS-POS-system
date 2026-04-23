@@ -8,10 +8,12 @@ namespace POS_system_cs.UI.Wpf.Controls;
 
 public sealed partial class PaymentDialog : Window
 {
+    private static readonly TimeSpan AutoCompleteDelay = TimeSpan.FromSeconds(3);
     private decimal _remainingAmount;
     private decimal _cashAmount;
     private decimal _onlineAmount;
     private decimal _receivedTotal;
+    private bool _autoCompletePending;
 
     public PaymentDialog(decimal payableAmount, decimal discountAmount)
     {
@@ -73,7 +75,31 @@ public sealed partial class PaymentDialog : Window
         _remainingAmount = Math.Max(0, _remainingAmount - appliedAmount);
         ReceivedBox.Clear();
         RefreshPaymentView();
+
+        if (_remainingAmount <= 0)
+        {
+            BeginAutoComplete();
+            return;
+        }
+
         ReceivedBox.Focus();
+    }
+
+    private async void BeginAutoComplete()
+    {
+        if (_autoCompletePending)
+        {
+            return;
+        }
+
+        _autoCompletePending = true;
+        CompleteButton.Focus();
+        await Task.Delay(AutoCompleteDelay);
+
+        if (_autoCompletePending && IsVisible && _remainingAmount <= 0)
+        {
+            Complete();
+        }
     }
 
     private void Complete()
@@ -85,6 +111,7 @@ public sealed partial class PaymentDialog : Window
         }
 
         Result = new PaymentResult(_receivedTotal, GetPaymentMethod(_cashAmount, _onlineAmount));
+        _autoCompletePending = false;
         DialogResult = true;
     }
 

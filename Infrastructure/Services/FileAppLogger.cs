@@ -16,6 +16,8 @@ public sealed class FileAppLogger : IAppLogger
         _logDirectory = Path.Combine(localAppData, "POS-system-cs", LogDirectoryName);
     }
 
+    public string LogDirectory => _logDirectory;
+
     public void Info(string message)
     {
         Write("INFO", message);

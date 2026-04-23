@@ -21,6 +21,7 @@ The basics are in place:
 - Order saving and inventory deduction
 - Sales record search with date filters, order details, and summary totals
 - Basic reports: today sales, order count, stock overview, daily/weekly/monthly sales, and product rankings
+- Read-only settings page for store, database, language, and log paths
 - Low-stock indicators
 - Layered project structure
 - Database schema script
@@ -134,6 +135,10 @@ Search orders by date range, review order details, and see summary totals for th
 ### Reports
 
 Review today sales metrics, stock overview, daily/weekly/monthly sales summaries, and top/slow-selling product rankings.
+
+### Settings
+
+Review current store name, database path, receipt printer name, language settings file, log directory, and runtime directory. Editing these settings is planned for a later configuration pass.
 
 ## 🗄️ Database
 

@@ -16,7 +16,7 @@ public static class AppCompositionRoot
     private static readonly SqliteConnectionFactory ConnectionFactory = new(Settings);
     private static readonly DatabaseInitializer DatabaseInitializer = new(ConnectionFactory);
     private static readonly LanguagePreferenceService LanguagePreferenceService = new();
-    private static readonly IAppLogger AppLogger = new FileAppLogger();
+    private static readonly FileAppLogger AppLogger = new();
 
     private static readonly ICategoryService CategoryService = new CategoryService(ConnectionFactory);
     private static readonly IProductService ProductService = new ProductService(ConnectionFactory);
@@ -62,7 +62,10 @@ public static class AppCompositionRoot
             CashierService,
             OrderService,
             ReportService,
-            LanguagePreferenceService.SaveLanguage);
+            LanguagePreferenceService.SaveLanguage,
+            Settings,
+            LanguagePreferenceService.SettingsPath,
+            AppLogger.LogDirectory);
     }
 
     private static IReadOnlyList<ModuleDefinition> CreateModules()

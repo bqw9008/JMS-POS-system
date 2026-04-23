@@ -53,6 +53,17 @@ public static class Localizer
         ["Reports.Title"] = ("Reports", "统计报表"),
         ["Reports.Desc"] = ("Review sales, stock, and product rankings.", "查看销售、库存和商品排行。"),
 
+        ["Settings.Title"] = ("Settings", "系统设置"),
+        ["Settings.Desc"] = ("Review current store, database, language, and log settings.", "查看当前店铺、数据库、语言和日志设置。"),
+        ["Settings.StoreName"] = ("Store name", "店铺名称"),
+        ["Settings.DatabasePath"] = ("Database path", "数据库路径"),
+        ["Settings.ReceiptPrinter"] = ("Receipt printer", "小票打印机"),
+        ["Settings.CurrentLanguage"] = ("Current language", "当前语言"),
+        ["Settings.LanguageSettingsPath"] = ("Language settings file", "语言设置文件"),
+        ["Settings.LogDirectory"] = ("Log directory", "日志目录"),
+        ["Settings.RuntimeDirectory"] = ("Runtime directory", "运行目录"),
+        ["Settings.ReadOnlyNotice"] = ("This page is currently read-only. Editable system settings will be added after the configuration model is finalized.", "此页面目前仅供查看。待配置模型确定后再增加可编辑的系统设置。"),
+
         ["Field.Name"] = ("Name", "名称"),
         ["Field.Description"] = ("Description", "说明"),
         ["Field.Active"] = ("Active", "启用"),
