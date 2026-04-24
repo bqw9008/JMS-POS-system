@@ -42,12 +42,12 @@ dotnet run
 
 ## Smoke Test
 
-- [ ] App starts without crash
+- [x] App starts without crash
 - [ ] Local SQLite database is created on first launch when missing
-- [ ] Main window opens with left navigation and default module content
-- [ ] Current language follows saved preference, or system UI language on first launch
-- [ ] Switching language updates navigation text and current page text
-- [ ] Restarting the app keeps the selected language
+- [x] Main window opens with left navigation and default module content
+- [x] Current language follows saved preference, or system UI language on first launch
+- [x] Switching language updates navigation text and current page text
+- [x] Restarting the app keeps the selected language
 
 ## Category Management
 
@@ -81,64 +81,64 @@ dotnet run
 
 - [ ] Add product by code
 - [ ] Add product by barcode
-- [ ] Add product by unique name match
-- [ ] Confirm duplicate add increments quantity instead of creating a new line
-- [ ] Edit selected quantity with `F6`
-- [ ] Remove selected cart item with `Delete`
-- [ ] Clear cart with `F4`
-- [ ] Focus product input with `F2`
-- [ ] Clear input with `Esc`
+- [x] Add product by unique name match
+- [x] Confirm duplicate add increments quantity instead of creating a new line
+- [x] Edit selected quantity with `F6`
+- [x] Remove selected cart item with `Delete`
+- [x] Clear cart with `F4`
+- [x] Focus product input with `F2`
+- [x] Clear input with `Esc`
 - [ ] Confirm empty cart cannot enter checkout
 
 ## Cashier Payment Flow
 
-- [ ] Checkout with full cash payment
-- [ ] Checkout with full online payment
-- [ ] Checkout with split payment using cash and online
-- [ ] Use `F7` for cash and `F8` for online inside payment dialog
-- [ ] Leave received amount empty and confirm it defaults to remaining due
-- [ ] Enter more than remaining due in cash and confirm change is calculated
-- [ ] Confirm checkout cannot complete while there is remaining due
-- [ ] Confirm received input is cleared after each recorded payment
+- [x] Checkout with full cash payment
+- [x] Checkout with full online payment
+- [x] Checkout with split payment using cash and online
+- [x] Use `F7` for cash and `F8` for online inside payment dialog
+- [x] Leave received amount empty and confirm it defaults to remaining due
+- [x] Enter more than remaining due in cash and confirm change is calculated
+- [x] Confirm checkout cannot complete while there is remaining due
+- [x] Confirm received input is cleared after each recorded payment
 
 ## Receipt Preview
 
-- [ ] Confirm checkout success opens receipt preview window
-- [ ] Confirm preview shows store name
-- [ ] Confirm preview shows order number and checkout time
-- [ ] Confirm preview shows payment method
-- [ ] Confirm preview shows each line item with quantity, unit price, and amount
-- [ ] Confirm preview shows total, discount, payable, received, and change
-- [ ] Confirm preview is preview-only and no real printing occurs
-- [ ] Close preview and confirm cashier cart is cleared afterward
+- [x] Confirm checkout success opens receipt preview window
+- [x] Confirm preview shows store name
+- [x] Confirm preview shows order number and checkout time
+- [x] Confirm preview shows payment method
+- [x] Confirm preview shows each line item with quantity, unit price, and amount
+- [x] Confirm preview shows total, discount, payable, received, and change
+- [x] Confirm preview is preview-only and no real printing occurs
+- [x] Close preview and confirm cashier cart is cleared afterward
 
 ## Order Persistence And Stock Deduction
 
-- [ ] Complete a checkout and verify the order appears in sales records
-- [ ] Open the saved order and verify line items match the cart
-- [ ] Confirm stock is deducted after successful checkout
+- [x] Complete a checkout and verify the order appears in sales records
+- [x] Open the saved order and verify line items match the cart
+- [x] Confirm stock is deducted after successful checkout
 - [ ] Confirm sold products cannot be hard deleted afterward
 
 ## Sales Records
 
-- [ ] Query orders for today
-- [ ] Query orders for a custom date range
-- [ ] Confirm invalid date range is rejected
+- [x] Query orders for today
+- [x] Query orders for a custom date range
+- [x] Confirm invalid date range is rejected
 - [ ] Open order details and verify totals
 - [ ] Confirm summary totals match the current result set
 
 ## Reports
 
-- [ ] Open reports page and confirm dashboard metrics load
-- [ ] Verify today sales and today order count after recent checkouts
-- [ ] Verify stock overview reflects inventory changes
+- [x] Open reports page and confirm dashboard metrics load
+- [x] Verify today sales and today order count after recent checkouts
+- [x] Verify stock overview reflects inventory changes
 - [ ] Verify daily, weekly, and monthly summary tabs load
 - [ ] Verify top-selling and slow-selling product rankings load
 
 ## Settings
 
-- [ ] Open settings page and verify store name, database path, printer name, settings file, language settings file, log directory, and runtime directory are displayed
-- [ ] Edit and save store name successfully
+- [x] Open settings page and verify store name, database path, printer name, settings file, language settings file, log directory, and runtime directory are displayed
+- [x] Edit and save store name successfully
 - [ ] Edit and save receipt printer name successfully
 - [ ] Edit and save database path successfully
 - [ ] Confirm reset reloads current saved values
@@ -146,15 +146,15 @@ dotnet run
 
 ## Logging
 
-- [ ] Confirm log file is created under `%LOCALAPPDATA%\POS-system-cs\logs\`
-- [ ] Confirm app start and exit are recorded
+- [x] Confirm log file is created under `%LOCALAPPDATA%\POS-system-cs\logs\`
+- [x] Confirm app start and exit are recorded
 - [ ] Confirm checkout activity is recorded
 - [ ] Confirm inventory changes are recorded
 - [ ] Confirm unexpected operation failures are written to log
 
 ## Negative And Edge Cases
 
-- [ ] Try checkout with nonexistent product input
+- [x] Try checkout with nonexistent product input
 - [ ] Try checkout with multiple fuzzy product matches
 - [ ] Try checkout with insufficient stock
 - [ ] Try entering invalid discount format
