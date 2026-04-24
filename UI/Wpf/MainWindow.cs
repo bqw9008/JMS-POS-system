@@ -20,7 +20,9 @@ public sealed partial class MainWindow : Window
     private readonly IOrderService _orderService;
     private readonly IReportService _reportService;
     private readonly Action<AppLanguage> _saveLanguage;
+    private readonly Func<AppSettings, Task> _saveSettingsAsync;
     private readonly AppSettings _settings;
+    private readonly string _settingsPath;
     private readonly string _languageSettingsPath;
     private readonly string _logDirectory;
     private readonly Dictionary<string, WpfButton> _navigationButtons = [];
@@ -35,7 +37,9 @@ public sealed partial class MainWindow : Window
         IOrderService orderService,
         IReportService reportService,
         Action<AppLanguage> saveLanguage,
+        Func<AppSettings, Task> saveSettingsAsync,
         AppSettings settings,
+        string settingsPath,
         string languageSettingsPath,
         string logDirectory)
     {
@@ -47,7 +51,9 @@ public sealed partial class MainWindow : Window
         _orderService = orderService;
         _reportService = reportService;
         _saveLanguage = saveLanguage;
+        _saveSettingsAsync = saveSettingsAsync;
         _settings = settings;
+        _settingsPath = settingsPath;
         _languageSettingsPath = languageSettingsPath;
         _logDirectory = logDirectory;
 
@@ -144,7 +150,7 @@ public sealed partial class MainWindow : Window
             "inventory" => new InventoryManagementPage(_inventoryService, _productService),
             "orders" => new SalesRecordPage(_orderService),
             "reports" => new ReportsPage(_reportService),
-            "settings" => new SettingsPage(_settings, _languageSettingsPath, _logDirectory),
+            "settings" => new SettingsPage(_settings, _saveSettingsAsync, _settingsPath, _languageSettingsPath, _logDirectory),
             _ => new ModulePlaceholderPage(module)
         };
     }

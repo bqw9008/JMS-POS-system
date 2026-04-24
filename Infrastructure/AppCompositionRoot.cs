@@ -1,4 +1,5 @@
-﻿using POS_system_cs.Application.Navigation;
+using System.IO;
+using POS_system_cs.Application.Navigation;
 using POS_system_cs.Application.Services;
 using POS_system_cs.Configuration;
 using POS_system_cs.Infrastructure.Persistence;
@@ -13,6 +14,7 @@ namespace POS_system_cs.Infrastructure;
 public static class AppCompositionRoot
 {
     private static readonly AppSettings Settings = new();
+    private static readonly AppSettingsService AppSettingsService = new();
     private static readonly SqliteConnectionFactory ConnectionFactory = new(Settings);
     private static readonly DatabaseInitializer DatabaseInitializer = new(ConnectionFactory);
     private static readonly LanguagePreferenceService LanguagePreferenceService = new();
@@ -34,6 +36,7 @@ public static class AppCompositionRoot
 
         try
         {
+            Settings.ApplyFrom(AppSettingsService.Load());
             Localizer.SetLanguage(LanguagePreferenceService.LoadLanguageOrSystemDefault());
             AppLogger.Info($"Language initialized: {Localizer.Current}.");
 
@@ -63,9 +66,50 @@ public static class AppCompositionRoot
             OrderService,
             ReportService,
             LanguagePreferenceService.SaveLanguage,
+            SaveSettingsAsync,
             Settings,
+            AppSettingsService.SettingsPath,
             LanguagePreferenceService.SettingsPath,
             AppLogger.LogDirectory);
+    }
+
+    private static async Task SaveSettingsAsync(AppSettings updatedSettings)
+    {
+        var previousSettings = Settings.Clone();
+
+        try
+        {
+            Settings.ApplyFrom(updatedSettings);
+
+            if (RequiresDatabaseInitialization(previousSettings, Settings))
+            {
+                await DatabaseInitializer.InitializeAsync();
+            }
+
+            AppSettingsService.Save(Settings);
+            AppLogger.Info($"Application settings saved. Store={Settings.StoreName}; DatabasePath={Settings.DatabasePath}; ReceiptPrinter={Settings.ReceiptPrinterName}.");
+        }
+        catch (Exception ex)
+        {
+            Settings.ApplyFrom(previousSettings);
+            AppLogger.Error("Saving application settings failed.", ex);
+            throw;
+        }
+    }
+
+    private static bool RequiresDatabaseInitialization(AppSettings previousSettings, AppSettings currentSettings)
+    {
+        var previousPath = ResolveDatabasePath(previousSettings.DatabasePath);
+        var currentPath = ResolveDatabasePath(currentSettings.DatabasePath);
+        return !string.Equals(previousPath, currentPath, StringComparison.OrdinalIgnoreCase)
+               || !File.Exists(currentPath);
+    }
+
+    private static string ResolveDatabasePath(string databasePath)
+    {
+        return Path.IsPathRooted(databasePath)
+            ? databasePath
+            : Path.Combine(AppContext.BaseDirectory, databasePath);
     }
 
     private static IReadOnlyList<ModuleDefinition> CreateModules()

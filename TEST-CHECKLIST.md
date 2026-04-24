@@ -137,8 +137,12 @@ dotnet run
 
 ## Settings
 
-- [ ] Open settings page and verify store name, database path, printer name, language settings file, log directory, and runtime directory are displayed
-- [ ] Confirm the page is read-only
+- [ ] Open settings page and verify store name, database path, printer name, settings file, language settings file, log directory, and runtime directory are displayed
+- [ ] Edit and save store name successfully
+- [ ] Edit and save receipt printer name successfully
+- [ ] Edit and save database path successfully
+- [ ] Confirm reset reloads current saved values
+- [ ] Confirm changing the database path initializes the target database automatically
 
 ## Logging
 
