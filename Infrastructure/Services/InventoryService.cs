@@ -10,10 +10,12 @@ namespace POS_system_cs.Infrastructure.Services;
 public sealed class InventoryService : IInventoryService
 {
     private readonly SqliteConnectionFactory _connectionFactory;
+    private readonly IAppLogger _logger;
 
-    public InventoryService(SqliteConnectionFactory connectionFactory)
+    public InventoryService(SqliteConnectionFactory connectionFactory, IAppLogger logger)
     {
         _connectionFactory = connectionFactory;
+        _logger = logger;
     }
 
     public async Task<IReadOnlyList<StockOverview>> GetOverviewAsync(CancellationToken cancellationToken = default)
@@ -87,7 +89,16 @@ public sealed class InventoryService : IInventoryService
             throw new InvalidOperationException(Localizer.T("Inventory.StockNonNegative"));
         }
 
-        await UpsertStockAsync(productId, quantity, false, cancellationToken);
+        try
+        {
+            var change = await UpsertStockAsync(productId, quantity, false, cancellationToken);
+            _logger.Info($"Stock set. ProductId={productId}; Previous={change.PreviousQuantity:N2}; New={change.NewQuantity:N2}.");
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Stock set failed. ProductId={productId}; Requested={quantity:N2}.", ex);
+            throw;
+        }
     }
 
     public async Task AdjustStockAsync(Guid productId, decimal quantityDelta, string reason, CancellationToken cancellationToken = default)
@@ -102,10 +113,19 @@ public sealed class InventoryService : IInventoryService
             throw new InvalidOperationException(Localizer.T("Inventory.AdjustNonZero"));
         }
 
-        await UpsertStockAsync(productId, quantityDelta, true, cancellationToken);
+        try
+        {
+            var change = await UpsertStockAsync(productId, quantityDelta, true, cancellationToken);
+            _logger.Info($"Stock adjusted. ProductId={productId}; Previous={change.PreviousQuantity:N2}; Delta={quantityDelta:N2}; New={change.NewQuantity:N2}; Reason={NormalizeReason(reason)}.");
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Stock adjustment failed. ProductId={productId}; Delta={quantityDelta:N2}; Reason={NormalizeReason(reason)}.", ex);
+            throw;
+        }
     }
 
-    private async Task UpsertStockAsync(Guid productId, decimal quantity, bool isDelta, CancellationToken cancellationToken)
+    private async Task<(decimal PreviousQuantity, decimal NewQuantity)> UpsertStockAsync(Guid productId, decimal quantity, bool isDelta, CancellationToken cancellationToken)
     {
         await using var connection = _connectionFactory.CreateConnection();
         await connection.OpenAsync(cancellationToken);
@@ -137,6 +157,7 @@ public sealed class InventoryService : IInventoryService
             await command.ExecuteNonQueryAsync(cancellationToken);
 
             await transaction.CommitAsync(cancellationToken);
+            return (currentQuantity, newQuantity);
         }
         catch
         {
@@ -166,5 +187,10 @@ public sealed class InventoryService : IInventoryService
             CreatedAt = DateTime.Parse(reader.GetString(4)),
             UpdatedAt = reader.IsDBNull(5) ? null : DateTime.Parse(reader.GetString(5))
         };
+    }
+
+    private static string NormalizeReason(string? reason)
+    {
+        return string.IsNullOrWhiteSpace(reason) ? "<empty>" : reason.Trim();
     }
 }

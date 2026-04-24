@@ -18,10 +18,10 @@ public static class AppCompositionRoot
     private static readonly LanguagePreferenceService LanguagePreferenceService = new();
     private static readonly FileAppLogger AppLogger = new();
 
-    private static readonly ICategoryService CategoryService = new CategoryService(ConnectionFactory);
-    private static readonly IProductService ProductService = new ProductService(ConnectionFactory);
-    private static readonly IInventoryService InventoryService = new InventoryService(ConnectionFactory);
-    private static readonly ICashierService CashierService = new CashierService(ConnectionFactory);
+    private static readonly ICategoryService CategoryService = new CategoryService(ConnectionFactory, AppLogger);
+    private static readonly IProductService ProductService = new ProductService(ConnectionFactory, AppLogger);
+    private static readonly IInventoryService InventoryService = new InventoryService(ConnectionFactory, AppLogger);
+    private static readonly ICashierService CashierService = new CashierService(ConnectionFactory, AppLogger);
     private static readonly IOrderService OrderService = new OrderService(ConnectionFactory);
     private static readonly IReportService ReportService = new ReportService(ConnectionFactory);
 

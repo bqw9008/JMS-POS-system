@@ -67,7 +67,7 @@ Basic application logs are written per user under:
 %LOCALAPPDATA%\POS-system-cs\logs\app-YYYYMMDD.log
 ```
 
-The current logging covers startup, language/database initialization, unexpected app errors, and WPF operation failures.
+The current logging covers startup, language/database initialization, unexpected app errors, WPF operation failures, cashier checkout results, inventory changes, and product/category maintenance actions.
 
 
 ## 🧪 Test Data

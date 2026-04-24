@@ -9,10 +9,12 @@ namespace POS_system_cs.Infrastructure.Services;
 public sealed class ProductService : IProductService
 {
     private readonly SqliteConnectionFactory _connectionFactory;
+    private readonly IAppLogger _logger;
 
-    public ProductService(SqliteConnectionFactory connectionFactory)
+    public ProductService(SqliteConnectionFactory connectionFactory, IAppLogger logger)
     {
         _connectionFactory = connectionFactory;
+        _logger = logger;
     }
 
     public async Task<IReadOnlyList<Product>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -149,10 +151,12 @@ public sealed class ProductService : IProductService
             }
 
             await transaction.CommitAsync(cancellationToken);
+            _logger.Info($"{(exists ? "Product updated" : "Product created")}. ProductId={product.Id}; Code={product.Code.Trim()}; Name={product.Name.Trim()}; Active={product.IsActive}; SalePrice={product.SalePrice:N2}.");
         }
-        catch
+        catch (Exception ex)
         {
             await transaction.RollbackAsync(cancellationToken);
+            _logger.Error($"Product save failed. ProductId={product.Id}; Code={product.Code.Trim()}; Name={product.Name.Trim()}.", ex);
             throw;
         }
     }
@@ -162,6 +166,8 @@ public sealed class ProductService : IProductService
         await using var connection = _connectionFactory.CreateConnection();
         await connection.OpenAsync(cancellationToken);
         await using var transaction = await connection.BeginTransactionAsync(cancellationToken);
+
+        var snapshot = await GetProductSnapshotAsync(connection, (SqliteTransaction)transaction, id, cancellationToken);
 
         try
         {
@@ -176,10 +182,13 @@ public sealed class ProductService : IProductService
             }
 
             await transaction.CommitAsync(cancellationToken);
+            _logger.Info(
+                $"{(hasSales ? "Product disabled due to sales history" : "Product deleted")}. ProductId={id}; Code={snapshot?.Code ?? "<unknown>"}; Name={snapshot?.Name ?? "<unknown>"}.");
         }
-        catch
+        catch (Exception ex)
         {
             await transaction.RollbackAsync(cancellationToken);
+            _logger.Error($"Product delete failed. ProductId={id}; Code={snapshot?.Code ?? "<unknown>"}; Name={snapshot?.Name ?? "<unknown>"}.", ex);
             throw;
         }
     }
@@ -229,6 +238,28 @@ public sealed class ProductService : IProductService
         command.Parameters.AddWithValue("$id", id.ToString());
         command.Parameters.AddWithValue("$updatedAt", DateTime.Now.ToString("O"));
         await command.ExecuteNonQueryAsync(cancellationToken);
+    }
+
+    private static async Task<(string Code, string Name)?> GetProductSnapshotAsync(
+        SqliteConnection connection,
+        SqliteTransaction transaction,
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        await using var command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText = """
+            SELECT code, name
+            FROM products
+            WHERE id = $id
+            LIMIT 1;
+            """;
+        command.Parameters.AddWithValue("$id", id.ToString());
+
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+        return await reader.ReadAsync(cancellationToken)
+            ? (reader.GetString(0), reader.GetString(1))
+            : null;
     }
 
     private static async Task DeleteProductAsync(SqliteConnection connection, SqliteTransaction transaction, Guid id, CancellationToken cancellationToken)

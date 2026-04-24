@@ -9,10 +9,12 @@ namespace POS_system_cs.Infrastructure.Services;
 public sealed class CategoryService : ICategoryService
 {
     private readonly SqliteConnectionFactory _connectionFactory;
+    private readonly IAppLogger _logger;
 
-    public CategoryService(SqliteConnectionFactory connectionFactory)
+    public CategoryService(SqliteConnectionFactory connectionFactory, IAppLogger logger)
     {
         _connectionFactory = connectionFactory;
+        _logger = logger;
     }
 
     public async Task<IReadOnlyList<Category>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -70,7 +72,16 @@ public sealed class CategoryService : ICategoryService
         command.Parameters.AddWithValue("$createdAt", category.CreatedAt.ToString("O"));
         command.Parameters.AddWithValue("$updatedAt", DateTime.Now.ToString("O"));
 
-        await command.ExecuteNonQueryAsync(cancellationToken);
+        try
+        {
+            await command.ExecuteNonQueryAsync(cancellationToken);
+            _logger.Info($"{(exists ? "Category updated" : "Category created")}. CategoryId={category.Id}; Name={category.Name.Trim()}; Active={category.IsActive}.");
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"{(exists ? "Category save failed during update" : "Category save failed during create")}. CategoryId={category.Id}; Name={category.Name.Trim()}.", ex);
+            throw;
+        }
     }
 
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
@@ -89,10 +100,22 @@ public sealed class CategoryService : ICategoryService
             }
         }
 
+        var categoryName = await GetCategoryNameAsync(connection, id, cancellationToken);
+
         await using var command = connection.CreateCommand();
         command.CommandText = "DELETE FROM categories WHERE id = $id;";
         command.Parameters.AddWithValue("$id", id.ToString());
-        await command.ExecuteNonQueryAsync(cancellationToken);
+
+        try
+        {
+            await command.ExecuteNonQueryAsync(cancellationToken);
+            _logger.Info($"Category deleted. CategoryId={id}; Name={categoryName ?? "<unknown>"}.");
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Category delete failed. CategoryId={id}; Name={categoryName ?? "<unknown>"}.", ex);
+            throw;
+        }
     }
 
     private static async Task<bool> ExistsAsync(SqliteConnection connection, Guid id, CancellationToken cancellationToken)
@@ -101,6 +124,14 @@ public sealed class CategoryService : ICategoryService
         command.CommandText = "SELECT COUNT(1) FROM categories WHERE id = $id;";
         command.Parameters.AddWithValue("$id", id.ToString());
         return Convert.ToInt32(await command.ExecuteScalarAsync(cancellationToken)) > 0;
+    }
+
+    private static async Task<string?> GetCategoryNameAsync(SqliteConnection connection, Guid id, CancellationToken cancellationToken)
+    {
+        await using var command = connection.CreateCommand();
+        command.CommandText = "SELECT name FROM categories WHERE id = $id LIMIT 1;";
+        command.Parameters.AddWithValue("$id", id.ToString());
+        return Convert.ToString(await command.ExecuteScalarAsync(cancellationToken));
     }
 
     private static Category ReadCategory(SqliteDataReader reader)

@@ -67,7 +67,7 @@ dotnet run
 %LOCALAPPDATA%\POS-system-cs\logs\app-YYYYMMDD.log
 ```
 
-当前日志覆盖程序启动、语言/数据库初始化、未处理异常和 WPF 操作失败。
+当前日志覆盖程序启动、语言/数据库初始化、未处理异常、WPF 操作失败，以及收银结算结果、库存变更、商品/分类维护等关键业务操作。
 
 
 ## 🧪 测试数据

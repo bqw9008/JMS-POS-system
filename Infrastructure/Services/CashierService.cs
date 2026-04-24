@@ -9,10 +9,12 @@ namespace POS_system_cs.Infrastructure.Services;
 public sealed class CashierService : ICashierService
 {
     private readonly SqliteConnectionFactory _connectionFactory;
+    private readonly IAppLogger _logger;
 
-    public CashierService(SqliteConnectionFactory connectionFactory)
+    public CashierService(SqliteConnectionFactory connectionFactory, IAppLogger logger)
     {
         _connectionFactory = connectionFactory;
+        _logger = logger;
     }
 
     public async Task<Order> CheckoutAsync(Order order, CancellationToken cancellationToken = default)
@@ -44,11 +46,13 @@ public sealed class CashierService : ICashierService
             }
 
             await transaction.CommitAsync(cancellationToken);
+            _logger.Info($"Checkout completed. OrderNo={order.OrderNo}; OrderId={order.Id}; Items={order.Items.Count}; Total={order.TotalAmount:N2}; Discount={order.DiscountAmount:N2}; Received={order.ReceivedAmount:N2}; Payment={order.PaymentMethod}.");
             return order;
         }
-        catch
+        catch (Exception ex)
         {
             await transaction.RollbackAsync(cancellationToken);
+            _logger.Error($"Checkout failed. OrderNo={order.OrderNo}; Items={order.Items.Count}; Total={order.TotalAmount:N2}; Discount={order.DiscountAmount:N2}; Received={order.ReceivedAmount:N2}; Payment={order.PaymentMethod}.", ex);
             throw;
         }
     }
