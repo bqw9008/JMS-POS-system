@@ -19,6 +19,7 @@ The basics are in place:
 - Inventory viewing and adjustment
 - Native WPF cashier checkout with cart, discount, split cash/online payment, and change calculation
 - Order saving and inventory deduction
+- Test receipt preview window shown after checkout for validating receipt content before printer integration
 - Sales record search with date filters, order details, and summary totals
 - Basic reports: today sales, order count, stock overview, daily/weekly/monthly sales, and product rankings
 - Read-only settings page for store, database, language, and log paths
@@ -30,7 +31,8 @@ Still on the way:
 
 - Login and roles
 - Configuration screens
-- Barcode scanner and receipt printer support
+- Barcode scanner support
+- Real receipt printer integration
 - Report export
 
 ## 🧰 Tech Stack
@@ -81,6 +83,11 @@ dotnet run
 
 Unset the variable or set it to `0` for normal use.
 
+Manual verification checklist:
+
+- [TEST-CHECKLIST.md](TEST-CHECKLIST.md)
+- [TEST-CHECKLIST.zh-CN.md](TEST-CHECKLIST.zh-CN.md)
+
 ## 🌐 Language
 
 The desktop UI supports English and Simplified Chinese. Use the language selector in the left navigation area to switch languages while the app is running.
@@ -117,6 +124,8 @@ The app can switch between English and Simplified Chinese from the left navigati
 ### Cashier
 
 The cashier page is native WPF. Add products by code, barcode, or a unique name match; manage the cart; use shortcuts including one-shot quantity editing; apply discounts; record cash or online payments in multiple steps with remaining amount and change calculation; use F7 for cash and F8 for online payment; save the order and deduct inventory.
+
+After checkout succeeds, the app currently opens a receipt preview window for testing. It shows store name, order number, time, payment method, line items, totals, discount, received amount, and change. This is a preview-only step for now and does not send anything to a physical printer yet.
 
 ### Category Management
 
@@ -171,7 +180,7 @@ Core tables:
 ### Phase 3: Devices and Release
 
 - Support barcode scanners
-- Support receipt printing
+- Support real receipt printing beyond the current preview window
 - Prepare deployment package
 - Polish the UI
 

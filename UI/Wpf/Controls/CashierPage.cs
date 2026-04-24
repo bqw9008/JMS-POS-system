@@ -23,14 +23,16 @@ public sealed partial class CashierPage : WpfUserControl
 {
     private readonly IProductService _productService;
     private readonly ICashierService _cashierService;
+    private readonly string _storeName;
     private readonly ObservableCollection<CashierCartItem> _cart = [];
     private bool _checkoutInProgress;
     private bool _updatingDiscount;
 
-    public CashierPage(IProductService productService, ICashierService cashierService)
+    public CashierPage(IProductService productService, ICashierService cashierService, string storeName)
     {
         _productService = productService;
         _cashierService = cashierService;
+        _storeName = storeName;
 
         InitializeComponent();
         ApplyLocalization();
@@ -244,7 +246,11 @@ public sealed partial class CashierPage : WpfUserControl
             var order = CreateOrder(dialog.Result.Value.ReceivedAmount, dialog.Result.Value.PaymentMethod, discount);
             var savedOrder = await _cashierService.CheckoutAsync(order);
 
-            System.Windows.MessageBox.Show(Window.GetWindow(this), Localizer.Format("Cashier.Success", savedOrder.OrderNo), Localizer.T("Cashier.SuccessTitle"), MessageBoxButton.OK, MessageBoxImage.Information);
+            var receiptPreview = new ReceiptPreviewWindow(savedOrder, _storeName)
+            {
+                Owner = Window.GetWindow(this)
+            };
+            receiptPreview.ShowDialog();
             ClearCart();
         }
         catch (Exception ex)

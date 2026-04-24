@@ -1,0 +1,50 @@
+<Window x:Class="POS_system_cs.UI.Wpf.Controls.ReceiptPreviewWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Width="520"
+        Height="760"
+        MinWidth="460"
+        MinHeight="640"
+        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource ShellBackgroundBrush}"
+        FontFamily="Microsoft YaHei UI">
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="HeaderText"
+                   Style="{StaticResource FormTitleTextStyle}" />
+        <TextBlock x:Name="DescriptionText"
+                   Grid.Row="1"
+                   Style="{StaticResource DescriptionTextStyle}"
+                   Margin="0,0,0,14" />
+        <Border Grid.Row="2"
+                Style="{StaticResource CardBorderStyle}"
+                Padding="0">
+            <TextBox x:Name="ReceiptContentBox"
+                     BorderThickness="0"
+                     Background="{StaticResource CardBackgroundBrush}"
+                     Foreground="{StaticResource TextBrush}"
+                     IsReadOnly="True"
+                     FontSize="14"
+                     Padding="14"
+                     VerticalScrollBarVisibility="Auto"
+                     HorizontalScrollBarVisibility="Disabled"
+                     TextWrapping="Wrap"
+                     AcceptsReturn="True" />
+        </Border>
+        <StackPanel Grid.Row="3"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,14,0,0">
+            <Button x:Name="CloseButton"
+                    Style="{StaticResource DialogPrimaryButtonStyle}"
+                    IsDefault="True"
+                    IsCancel="True" />
+        </StackPanel>
+    </Grid>
+</Window>

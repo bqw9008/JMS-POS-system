@@ -1,0 +1,174 @@
+# POS System Test Checklist
+
+This checklist is for manual verification of the current WPF desktop flow.
+
+Mark completed items with `[x]`.
+
+## Scope
+
+Current focus:
+
+- WPF shell startup
+- English / Simplified Chinese switching
+- Category, product, inventory, cashier, sales record, reports, and settings flows
+- Receipt preview window after checkout
+
+Out of current scope:
+
+- Real receipt printer integration
+- Barcode scanner hardware compatibility
+- Login / roles
+- Refunds
+
+## Test Setup
+
+Environment:
+
+- Windows
+- .NET 9 SDK
+
+Recommended preparation:
+
+1. Run `dotnet build`
+2. Optionally seed sample data for easier validation:
+
+```powershell
+$env:POS_SEED_TEST_DATA = "1"
+dotnet run
+```
+
+3. For normal-use verification, unset the variable or set it to `0`
+4. If retesting database initialization, delete the local `pos.db` first
+
+## Smoke Test
+
+- [ ] App starts without crash
+- [ ] Local SQLite database is created on first launch when missing
+- [ ] Main window opens with left navigation and default module content
+- [ ] Current language follows saved preference, or system UI language on first launch
+- [ ] Switching language updates navigation text and current page text
+- [ ] Restarting the app keeps the selected language
+
+## Category Management
+
+- [ ] Create a category with valid name and optional description
+- [ ] Edit an existing category and confirm the list refreshes
+- [ ] Delete a category that has no linked products
+- [ ] Confirm deletion is blocked for a category linked to products
+- [ ] Confirm empty category name is rejected
+
+## Product Management
+
+- [ ] Create a product with code, name, barcode, category, cost, sale price, and low-stock threshold
+- [ ] Edit an existing product and confirm changes are persisted
+- [ ] Search by code, barcode, and name
+- [ ] Delete a product with no sales history and confirm it is removed
+- [ ] Delete a product with sales history and confirm it is disabled instead of hard deleted
+- [ ] Confirm empty required fields are rejected
+- [ ] Confirm negative price or low-stock values are rejected
+
+## Inventory Management
+
+- [ ] Open inventory page and verify current stock list loads
+- [ ] Adjust stock by delta with positive quantity
+- [ ] Adjust stock by delta with negative quantity
+- [ ] Set stock directly to a valid value
+- [ ] Confirm stock cannot become negative
+- [ ] Confirm adjustment quantity `0` is rejected
+- [ ] Confirm low-stock items are visually distinguishable
+
+## Cashier Basic Flow
+
+- [ ] Add product by code
+- [ ] Add product by barcode
+- [ ] Add product by unique name match
+- [ ] Confirm duplicate add increments quantity instead of creating a new line
+- [ ] Edit selected quantity with `F6`
+- [ ] Remove selected cart item with `Delete`
+- [ ] Clear cart with `F4`
+- [ ] Focus product input with `F2`
+- [ ] Clear input with `Esc`
+- [ ] Confirm empty cart cannot enter checkout
+
+## Cashier Payment Flow
+
+- [ ] Checkout with full cash payment
+- [ ] Checkout with full online payment
+- [ ] Checkout with split payment using cash and online
+- [ ] Use `F7` for cash and `F8` for online inside payment dialog
+- [ ] Leave received amount empty and confirm it defaults to remaining due
+- [ ] Enter more than remaining due in cash and confirm change is calculated
+- [ ] Confirm checkout cannot complete while there is remaining due
+- [ ] Confirm received input is cleared after each recorded payment
+
+## Receipt Preview
+
+- [ ] Confirm checkout success opens receipt preview window
+- [ ] Confirm preview shows store name
+- [ ] Confirm preview shows order number and checkout time
+- [ ] Confirm preview shows payment method
+- [ ] Confirm preview shows each line item with quantity, unit price, and amount
+- [ ] Confirm preview shows total, discount, payable, received, and change
+- [ ] Confirm preview is preview-only and no real printing occurs
+- [ ] Close preview and confirm cashier cart is cleared afterward
+
+## Order Persistence And Stock Deduction
+
+- [ ] Complete a checkout and verify the order appears in sales records
+- [ ] Open the saved order and verify line items match the cart
+- [ ] Confirm stock is deducted after successful checkout
+- [ ] Confirm sold products cannot be hard deleted afterward
+
+## Sales Records
+
+- [ ] Query orders for today
+- [ ] Query orders for a custom date range
+- [ ] Confirm invalid date range is rejected
+- [ ] Open order details and verify totals
+- [ ] Confirm summary totals match the current result set
+
+## Reports
+
+- [ ] Open reports page and confirm dashboard metrics load
+- [ ] Verify today sales and today order count after recent checkouts
+- [ ] Verify stock overview reflects inventory changes
+- [ ] Verify daily, weekly, and monthly summary tabs load
+- [ ] Verify top-selling and slow-selling product rankings load
+
+## Settings
+
+- [ ] Open settings page and verify store name, database path, printer name, language settings file, log directory, and runtime directory are displayed
+- [ ] Confirm the page is read-only
+
+## Logging
+
+- [ ] Confirm log file is created under `%LOCALAPPDATA%\POS-system-cs\logs\`
+- [ ] Confirm app start and exit are recorded
+- [ ] Confirm checkout activity is recorded
+- [ ] Confirm inventory changes are recorded
+- [ ] Confirm unexpected operation failures are written to log
+
+## Negative And Edge Cases
+
+- [ ] Try checkout with nonexistent product input
+- [ ] Try checkout with multiple fuzzy product matches
+- [ ] Try checkout with insufficient stock
+- [ ] Try entering invalid discount format
+- [ ] Try entering discount larger than total
+- [ ] Try setting quantity to `0` or negative in quantity dialog
+- [ ] Try database initialization with missing or invalid schema file only in a controlled dev environment
+
+## Suggested Result Format
+
+For each item, use:
+
+- [x] Completed and passed
+- [ ] Not completed yet
+
+Recommended notes:
+
+- Build version or commit
+- Test date
+- Tester
+- Failed step
+- Screenshot or log path if relevant

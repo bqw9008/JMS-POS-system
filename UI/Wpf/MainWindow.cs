@@ -138,7 +138,7 @@ public sealed partial class MainWindow : Window
     {
         return module.Key switch
         {
-            "cashier" => new CashierPage(_productService, _cashierService),
+            "cashier" => new CashierPage(_productService, _cashierService, _settings.StoreName),
             "categories" => new CategoryManagementPage(_categoryService),
             "products" => new ProductManagementPage(_productService, _categoryService),
             "inventory" => new InventoryManagementPage(_inventoryService, _productService),
