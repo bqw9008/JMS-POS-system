@@ -1,8 +1,9 @@
-﻿using Microsoft.Data.Sqlite;
+using Microsoft.Data.Sqlite;
 using POS_system_cs.Application.Models;
 using POS_system_cs.Application.Services;
 using POS_system_cs.Domain.Entities;
 using POS_system_cs.Infrastructure.Persistence;
+using POS_system_cs.UI.Wpf.Localization;
 
 namespace POS_system_cs.Infrastructure.Services;
 
@@ -83,7 +84,7 @@ public sealed class InventoryService : IInventoryService
     {
         if (quantity < 0)
         {
-            throw new InvalidOperationException("库存不能为负数。");
+            throw new InvalidOperationException(Localizer.T("Inventory.StockNonNegative"));
         }
 
         await UpsertStockAsync(productId, quantity, false, cancellationToken);
@@ -93,12 +94,12 @@ public sealed class InventoryService : IInventoryService
     {
         if (productId == Guid.Empty)
         {
-            throw new InvalidOperationException("请选择商品。");
+            throw new InvalidOperationException(Localizer.T("Inventory.SelectProduct"));
         }
 
         if (quantityDelta == 0)
         {
-            throw new InvalidOperationException("调整数量不能为 0。");
+            throw new InvalidOperationException(Localizer.T("Inventory.AdjustNonZero"));
         }
 
         await UpsertStockAsync(productId, quantityDelta, true, cancellationToken);
@@ -116,7 +117,7 @@ public sealed class InventoryService : IInventoryService
             var newQuantity = isDelta ? currentQuantity + quantity : quantity;
             if (newQuantity < 0)
             {
-                throw new InvalidOperationException("库存调整后不能为负数。");
+                throw new InvalidOperationException(Localizer.T("Inventory.ResultNonNegative"));
             }
 
             await using var command = connection.CreateCommand();

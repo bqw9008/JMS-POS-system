@@ -13,6 +13,7 @@ public static class Localizer
     private static readonly Dictionary<string, (string En, string Zh)> Texts = new()
     {
         ["App.Title"] = ("Small Retail POS System", "小型商超 POS 系统"),
+        ["App.NavTitle"] = ("POS System", "POS 系统"),
         ["App.Subtitle"] = ("Small retail checkout desk", "小型商超收银台"),
         ["Language"] = ("Language", "语言"),
         ["English"] = ("English", "English"),
@@ -34,16 +35,26 @@ public static class Localizer
         ["Category.Desc"] = ("Create, edit, and delete product categories.", "新增、编辑和删除商品分类。"),
         ["Category.Form"] = ("Category", "分类信息"),
         ["Category.DeleteConfirm"] = ("Delete selected category?", "确认删除当前分类？"),
+        ["Category.NameRequired"] = ("Category name is required.", "分类名称不能为空。"),
+        ["Category.DeleteBlocked"] = ("This category is linked to products and cannot be deleted.", "该分类已关联商品，不能删除。"),
 
         ["Product.Title"] = ("Product Management", "商品管理"),
         ["Product.Desc"] = ("Maintain product data, barcode, prices, category, and active status.", "维护商品资料、条码、价格、分类和启用状态。"),
         ["Product.Form"] = ("Product", "商品信息"),
         ["Product.DeleteConfirm"] = ("Delete or disable selected product?", "确认删除或停用当前商品？"),
+        ["Product.CodeRequired"] = ("Product code is required.", "商品编码不能为空。"),
+        ["Product.NameRequired"] = ("Product name is required.", "商品名称不能为空。"),
+        ["Product.BarcodeRequired"] = ("Product barcode is required.", "商品条码不能为空。"),
+        ["Product.SelectCategory"] = ("Select a product category.", "请选择商品分类。"),
+        ["Product.NonNegativeValues"] = ("Prices and low-stock threshold cannot be negative.", "价格和库存预警值不能为负数。"),
 
         ["Inventory.Title"] = ("Inventory Management", "库存管理"),
         ["Inventory.Desc"] = ("View, adjust, and set stock quantities.", "查看库存、按数量调整，或直接设置商品库存。"),
         ["Inventory.Form"] = ("Stock", "库存调整"),
         ["Inventory.SelectProduct"] = ("Select a product.", "请选择商品。"),
+        ["Inventory.StockNonNegative"] = ("Stock cannot be negative.", "库存不能为负数。"),
+        ["Inventory.AdjustNonZero"] = ("Adjustment quantity cannot be 0.", "调整数量不能为 0。"),
+        ["Inventory.ResultNonNegative"] = ("Stock cannot be negative after adjustment.", "库存调整后不能为负数。"),
 
         ["Orders.Title"] = ("Sales Records", "销售记录"),
         ["Orders.Desc"] = ("Search orders and inspect line items.", "查询销售单并查看订单明细。"),
@@ -138,6 +149,10 @@ public static class Localizer
         ["Cashier.QuantityTitle"] = ("Edit Quantity", "修改数量"),
         ["Cashier.ProductPrefix"] = ("Product: {0}", "商品：{0}"),
         ["Cashier.QuantityPositive"] = ("Quantity must be greater than 0.", "数量必须大于 0。"),
+        ["Cashier.StockInsufficient"] = ("Insufficient stock for {0}. Current: {1:N2}, required: {2:N2}.", "商品 {0} 库存不足。当前库存：{1:N2}，需要：{2:N2}。"),
+        ["Cashier.DiscountNonNegative"] = ("Discount amount cannot be negative.", "优惠金额不能为负数。"),
+        ["Cashier.DiscountTooLarge"] = ("Discount amount cannot exceed the total item amount.", "优惠金额不能大于商品总额。"),
+        ["Cashier.ReceivedTooSmall"] = ("Received amount cannot be less than payable amount.", "实收金额不能小于应收金额。"),
         ["Cashier.PaymentTitle"] = ("Payment", "收款"),
         ["Cashier.PaymentHint"] = ("Shortcuts: Enter complete / F7 cash / F8 online / Esc cancel. Empty amount defaults to remaining due.", "快捷键：Enter 完成 / F7 现金 / F8 线上 / Esc 取消。未输入金额时默认收完剩余应收。"),
         ["Cashier.Complete"] = ("Complete Enter", "完成 Enter"),
@@ -152,6 +167,9 @@ public static class Localizer
         ["Payment.WeChat"] = ("WeChat", "微信"),
         ["Payment.Alipay"] = ("Alipay", "支付宝"),
         ["Payment.BankCard"] = ("Bank card", "银行卡"),
+
+        ["Database.TestCategoryNotFound"] = ("Test category was not found: {0}", "未找到测试分类：{0}"),
+        ["Database.SchemaNotFound"] = ("Database schema script Data/schema.sql was not found.", "未找到数据库建表脚本 Data/schema.sql。"),
     };
 
     public static AppLanguage Current { get; private set; } = AppLanguage.Chinese;
@@ -168,6 +186,11 @@ public static class Localizer
         var culture = CultureInfo.GetCultureInfo(cultureName);
         CultureInfo.CurrentCulture = culture;
         CultureInfo.CurrentUICulture = culture;
+    }
+
+    public static string LanguageName(AppLanguage language)
+    {
+        return language == AppLanguage.Chinese ? T("Chinese") : T("English");
     }
 
     public static string T(string key)

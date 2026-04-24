@@ -61,6 +61,7 @@ public sealed partial class MainWindow : Window
     private void ApplyLocalization()
     {
         Title = Localizer.T("App.Title");
+        BrandText.Text = Localizer.T("App.NavTitle");
         SubtitleText.Text = Localizer.T("App.Subtitle");
     }
 

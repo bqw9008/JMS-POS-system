@@ -1,4 +1,5 @@
-﻿using POS_system_cs.Infrastructure;
+using POS_system_cs.Infrastructure;
+using POS_system_cs.UI.Wpf.Localization;
 
 namespace POS_system_cs;
 
@@ -27,7 +28,11 @@ internal static class Program
         catch (Exception ex)
         {
             AppCompositionRoot.Logger.Error("Fatal application error.", ex);
-            System.Windows.MessageBox.Show(ex.Message, "Operation failed", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            System.Windows.MessageBox.Show(
+                ex.Message,
+                Localizer.T("OperationFailed"),
+                System.Windows.MessageBoxButton.OK,
+                System.Windows.MessageBoxImage.Error);
         }
     }
 

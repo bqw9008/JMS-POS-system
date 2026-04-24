@@ -1,7 +1,8 @@
-﻿using Microsoft.Data.Sqlite;
+using Microsoft.Data.Sqlite;
 using POS_system_cs.Application.Models;
 using POS_system_cs.Application.Services;
 using POS_system_cs.Infrastructure.Persistence;
+using POS_system_cs.UI.Wpf.Localization;
 
 namespace POS_system_cs.Infrastructure.Services;
 
@@ -18,7 +19,7 @@ public sealed class ReportService : IReportService
     {
         if (from > to)
         {
-            throw new InvalidOperationException("开始日期不能晚于结束日期。");
+            throw new InvalidOperationException(Localizer.T("Orders.FromDateError"));
         }
 
         await using var connection = _connectionFactory.CreateConnection();

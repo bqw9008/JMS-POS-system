@@ -1,7 +1,8 @@
-﻿using Microsoft.Data.Sqlite;
+using Microsoft.Data.Sqlite;
 using POS_system_cs.Application.Services;
 using POS_system_cs.Domain.Entities;
 using POS_system_cs.Infrastructure.Persistence;
+using POS_system_cs.UI.Wpf.Localization;
 
 namespace POS_system_cs.Infrastructure.Services;
 
@@ -267,19 +268,29 @@ public sealed class ProductService : IProductService
 
     private static void Validate(Product product)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(product.Code);
-        ArgumentException.ThrowIfNullOrWhiteSpace(product.Name);
-        ArgumentException.ThrowIfNullOrWhiteSpace(product.Barcode);
+        if (string.IsNullOrWhiteSpace(product.Code))
+        {
+            throw new InvalidOperationException(Localizer.T("Product.CodeRequired"));
+        }
+
+        if (string.IsNullOrWhiteSpace(product.Name))
+        {
+            throw new InvalidOperationException(Localizer.T("Product.NameRequired"));
+        }
+
+        if (string.IsNullOrWhiteSpace(product.Barcode))
+        {
+            throw new InvalidOperationException(Localizer.T("Product.BarcodeRequired"));
+        }
 
         if (product.CategoryId == Guid.Empty)
         {
-            throw new InvalidOperationException("请选择商品分类。");
+            throw new InvalidOperationException(Localizer.T("Product.SelectCategory"));
         }
 
         if (product.CostPrice < 0 || product.SalePrice < 0 || product.LowStockThreshold < 0)
         {
-            throw new InvalidOperationException("价格和库存预警值不能为负数。");
+            throw new InvalidOperationException(Localizer.T("Product.NonNegativeValues"));
         }
     }
 }
-

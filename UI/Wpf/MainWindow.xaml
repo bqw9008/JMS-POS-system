@@ -23,7 +23,7 @@
             </Border.Background>
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="16,20,16,20">
-                    <TextBlock Text="POS System"
+                    <TextBlock x:Name="BrandText"
                                FontSize="24"
                                FontWeight="Bold"
                                Foreground="{StaticResource TextBrush}"

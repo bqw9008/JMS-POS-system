@@ -41,7 +41,7 @@ public sealed partial class SettingsPage : WpfUserControl
         StoreNameBox.Text = _settings.StoreName;
         DatabasePathBox.Text = ResolveDatabasePath(_settings.DatabasePath);
         ReceiptPrinterBox.Text = string.IsNullOrWhiteSpace(_settings.ReceiptPrinterName) ? "-" : _settings.ReceiptPrinterName;
-        CurrentLanguageBox.Text = Localizer.Current.ToString();
+        CurrentLanguageBox.Text = Localizer.LanguageName(Localizer.Current);
         LanguageSettingsPathBox.Text = _languageSettingsPath;
         LogDirectoryBox.Text = _logDirectory;
         RuntimeDirectoryBox.Text = AppContext.BaseDirectory;

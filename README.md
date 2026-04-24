@@ -11,7 +11,7 @@ This is still an early-stage project, so the focus is on a clean foundation rath
 The basics are in place:
 
 - WPF desktop shell with native WPF pages for the current main modules
-- Built-in English / Simplified Chinese UI switch
+- Built-in English / Simplified Chinese switch for the current main WPF pages
 - Basic local file logging for startup, initialization, and unexpected errors
 - Local SQLite database setup on first launch
 - Category management
@@ -90,6 +90,8 @@ Current behavior:
 - On first launch, the app follows the system UI language when possible: Chinese systems use Simplified Chinese, other systems use English.
 - Switching languages refreshes the current WPF page and navigation text.
 - After the user switches languages, the selected language is persisted in the user's AppData settings and reused on restart.
+- The current main WPF pages, settings display text, and service-side validation/error messages used by the WPF flow are localized.
+- Archived code under `UI/LegacyWinForms/` is kept as migration reference and is not the current localization target.
 
 ## 🗂️ Project Layout
 

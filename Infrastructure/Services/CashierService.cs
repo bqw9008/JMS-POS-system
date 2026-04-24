@@ -1,7 +1,8 @@
-﻿using Microsoft.Data.Sqlite;
+using Microsoft.Data.Sqlite;
 using POS_system_cs.Application.Services;
 using POS_system_cs.Domain.Entities;
 using POS_system_cs.Infrastructure.Persistence;
+using POS_system_cs.UI.Wpf.Localization;
 
 namespace POS_system_cs.Infrastructure.Services;
 
@@ -59,7 +60,7 @@ public sealed class CashierService : ICashierService
             var stock = await GetStockAsync(connection, transaction, item.ProductId, cancellationToken);
             if (stock < item.Quantity)
             {
-                throw new InvalidOperationException($"商品 {item.ProductName} 库存不足。当前库存：{stock}，需要：{item.Quantity}。");
+                throw new InvalidOperationException(Localizer.Format("Cashier.StockInsufficient", item.ProductName, stock, item.Quantity));
             }
         }
     }
@@ -138,29 +139,29 @@ public sealed class CashierService : ICashierService
     {
         if (order.Items.Count == 0)
         {
-            throw new InvalidOperationException("购物车为空，不能结算。");
+            throw new InvalidOperationException(Localizer.T("Cashier.EmptyCart"));
         }
 
         if (order.Items.Any(item => item.Quantity <= 0))
         {
-            throw new InvalidOperationException("商品数量必须大于 0。");
+            throw new InvalidOperationException(Localizer.T("Cashier.QuantityPositive"));
         }
 
         order.TotalAmount = order.Items.Sum(item => item.Amount);
         if (order.DiscountAmount < 0)
         {
-            throw new InvalidOperationException("优惠金额不能为负数。");
+            throw new InvalidOperationException(Localizer.T("Cashier.DiscountNonNegative"));
         }
 
         if (order.DiscountAmount > order.TotalAmount)
         {
-            throw new InvalidOperationException("优惠金额不能大于商品总额。");
+            throw new InvalidOperationException(Localizer.T("Cashier.DiscountTooLarge"));
         }
 
         var payable = order.TotalAmount - order.DiscountAmount;
         if (order.ReceivedAmount < payable)
         {
-            throw new InvalidOperationException("实收金额不能小于应收金额。");
+            throw new InvalidOperationException(Localizer.T("Cashier.ReceivedTooSmall"));
         }
     }
 

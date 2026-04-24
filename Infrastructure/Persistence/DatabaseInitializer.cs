@@ -1,5 +1,6 @@
-﻿using System.IO;
+using System.IO;
 using Microsoft.Data.Sqlite;
+using POS_system_cs.UI.Wpf.Localization;
 
 namespace POS_system_cs.Infrastructure.Persistence;
 
@@ -136,7 +137,7 @@ public sealed class DatabaseInitializer
         command.CommandText = "SELECT id FROM categories WHERE name = $name LIMIT 1;";
         command.Parameters.AddWithValue("$name", name);
         return Convert.ToString(await command.ExecuteScalarAsync(cancellationToken))
-            ?? throw new InvalidOperationException($"未找到测试分类：{name}");
+            ?? throw new InvalidOperationException(Localizer.Format("Database.TestCategoryNotFound", name));
     }
 
     private static async Task ExecuteAsync(SqliteConnection connection, string sql, CancellationToken cancellationToken)
@@ -155,9 +156,8 @@ public sealed class DatabaseInitializer
         };
 
         var schemaPath = candidates.FirstOrDefault(File.Exists)
-            ?? throw new FileNotFoundException("未找到数据库建表脚本 Data/schema.sql。", candidates[0]);
+            ?? throw new FileNotFoundException(Localizer.T("Database.SchemaNotFound"), candidates[0]);
 
         return File.ReadAllText(schemaPath);
     }
 }
-

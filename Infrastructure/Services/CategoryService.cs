@@ -1,7 +1,8 @@
-﻿using Microsoft.Data.Sqlite;
+using Microsoft.Data.Sqlite;
 using POS_system_cs.Application.Services;
 using POS_system_cs.Domain.Entities;
 using POS_system_cs.Infrastructure.Persistence;
+using POS_system_cs.UI.Wpf.Localization;
 
 namespace POS_system_cs.Infrastructure.Services;
 
@@ -38,7 +39,10 @@ public sealed class CategoryService : ICategoryService
 
     public async Task SaveAsync(Category category, CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(category.Name);
+        if (string.IsNullOrWhiteSpace(category.Name))
+        {
+            throw new InvalidOperationException(Localizer.T("Category.NameRequired"));
+        }
 
         await using var connection = _connectionFactory.CreateConnection();
         await connection.OpenAsync(cancellationToken);
@@ -81,7 +85,7 @@ public sealed class CategoryService : ICategoryService
             var count = Convert.ToInt32(await checkCommand.ExecuteScalarAsync(cancellationToken));
             if (count > 0)
             {
-                throw new InvalidOperationException("该分类已关联商品，不能删除。");
+                throw new InvalidOperationException(Localizer.T("Category.DeleteBlocked"));
             }
         }
 
