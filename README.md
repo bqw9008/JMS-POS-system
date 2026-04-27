@@ -14,8 +14,8 @@ The basics are in place:
 - Built-in English / Simplified Chinese switch for the current main WPF pages
 - Basic local file logging for startup, initialization, and unexpected errors
 - Local SQLite database setup on first launch
-- Category management
-- Product management
+- Category management with dialog-based create/edit and read-only detail display
+- Product management with dialog-based create/edit and read-only detail display
 - Inventory viewing and adjustment
 - Native WPF cashier checkout with cart, discount, split cash/online payment, and change calculation
 - Order saving and inventory deduction
@@ -128,11 +128,11 @@ After checkout succeeds, the app currently opens a receipt preview window for te
 
 ### Category Management
 
-Create, edit, list, and delete categories. Categories linked to products are protected from accidental deletion.
+Create, edit, list, and delete categories. Create and edit actions open a focused dialog, while the main page keeps the selected category details read-only. Categories linked to products are protected from accidental deletion.
 
 ### Product Management
 
-Maintain product code, name, barcode, category, cost price, sale price, low-stock threshold, active status, and safe delete/disable behavior.
+Maintain product code, name, barcode, category, cost price, sale price, low-stock threshold, active status, and safe delete/disable behavior. Create and edit actions open a focused dialog, while the main page keeps selected product details read-only.
 
 ### Inventory Management
 
