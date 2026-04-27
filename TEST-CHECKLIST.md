@@ -143,6 +143,7 @@ dotnet run
 - [ ] Edit and save database path successfully
 - [ ] Confirm reset reloads current saved values
 - [ ] Confirm changing the database path initializes the target database automatically
+- [ ] Confirm empty, invalid, or directory-only database paths are rejected before save
 
 ## Logging
 

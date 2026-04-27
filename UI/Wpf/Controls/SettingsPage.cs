@@ -1,3 +1,4 @@
+using System.IO;
 using POS_system_cs.Configuration;
 using POS_system_cs.UI.Wpf.Localization;
 using WpfUserControl = System.Windows.Controls.UserControl;
@@ -35,14 +36,12 @@ public sealed partial class SettingsPage : WpfUserControl
     {
         TitleText.Text = Localizer.T("Settings.Title");
         DescriptionText.Text = Localizer.T("Settings.Desc");
-        EditNoticeText.Text = CurrentText(
-            "Settings on this page can be edited and saved immediately. If the database path changes, the target database will be initialized automatically.",
-            "此页面的设置可以直接编辑并保存。若数据库路径发生变化，目标数据库会自动初始化。");
+        EditNoticeText.Text = Localizer.T("Settings.EditNotice");
         StoreNameLabel.Text = Localizer.T("Settings.StoreName");
         DatabasePathLabel.Text = Localizer.T("Settings.DatabasePath");
         ReceiptPrinterLabel.Text = Localizer.T("Settings.ReceiptPrinter");
         CurrentLanguageLabel.Text = Localizer.T("Settings.CurrentLanguage");
-        SettingsFilePathLabel.Text = CurrentText("Settings file", "设置文件");
+        SettingsFilePathLabel.Text = Localizer.T("Settings.SettingsFile");
         LanguageSettingsPathLabel.Text = Localizer.T("Settings.LanguageSettingsPath");
         LogDirectoryLabel.Text = Localizer.T("Settings.LogDirectory");
         RuntimeDirectoryLabel.Text = Localizer.T("Settings.RuntimeDirectory");
@@ -80,7 +79,7 @@ public sealed partial class SettingsPage : WpfUserControl
             SetBusyState(true);
             await _saveSettingsAsync(updatedSettings);
             LoadSettings();
-            WpfUi.Info(this, CurrentText("Settings saved.", "设置已保存。"));
+            WpfUi.Info(this, Localizer.T("Settings.Saved"));
         }
         catch (Exception ex)
         {
@@ -108,7 +107,7 @@ public sealed partial class SettingsPage : WpfUserControl
         var storeName = StoreNameBox.Text.Trim();
         if (string.IsNullOrWhiteSpace(storeName))
         {
-            WpfUi.Info(this, CurrentText("Store name is required.", "店铺名称不能为空。"));
+            WpfUi.Info(this, Localizer.T("Settings.StoreNameRequired"));
             StoreNameBox.Focus();
             StoreNameBox.SelectAll();
             return null;
@@ -117,7 +116,15 @@ public sealed partial class SettingsPage : WpfUserControl
         var databasePath = DatabasePathBox.Text.Trim();
         if (string.IsNullOrWhiteSpace(databasePath))
         {
-            WpfUi.Info(this, CurrentText("Database path is required.", "数据库路径不能为空。"));
+            WpfUi.Info(this, Localizer.T("Settings.DatabasePathRequired"));
+            DatabasePathBox.Focus();
+            DatabasePathBox.SelectAll();
+            return null;
+        }
+
+        if (!TryValidateDatabasePath(databasePath, out var validationMessage))
+        {
+            WpfUi.Info(this, validationMessage);
             DatabasePathBox.Focus();
             DatabasePathBox.SelectAll();
             return null;
@@ -138,8 +145,34 @@ public sealed partial class SettingsPage : WpfUserControl
         ResetButton.IsEnabled = !isBusy;
     }
 
-    private static string CurrentText(string english, string chinese)
+    private static bool TryValidateDatabasePath(string databasePath, out string validationMessage)
     {
-        return Localizer.Current == AppLanguage.Chinese ? chinese : english;
+        try
+        {
+            var resolvedPath = Path.IsPathRooted(databasePath)
+                ? databasePath
+                : Path.Combine(AppContext.BaseDirectory, databasePath);
+            var fullPath = Path.GetFullPath(resolvedPath);
+
+            if (string.IsNullOrWhiteSpace(Path.GetFileName(fullPath)))
+            {
+                validationMessage = Localizer.T("Settings.DatabasePathFileRequired");
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(Path.GetDirectoryName(fullPath)))
+            {
+                validationMessage = Localizer.T("Settings.DatabasePathInvalid");
+                return false;
+            }
+
+            validationMessage = string.Empty;
+            return true;
+        }
+        catch (Exception ex) when (ex is ArgumentException or NotSupportedException or PathTooLongException)
+        {
+            validationMessage = Localizer.T("Settings.DatabasePathInvalid");
+            return false;
+        }
     }
 }

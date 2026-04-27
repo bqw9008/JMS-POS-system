@@ -22,7 +22,7 @@ The basics are in place:
 - Test receipt preview window shown after checkout for validating receipt content before printer integration
 - Sales record search with date filters, order details, and summary totals
 - Basic reports: today sales, order count, stock overview, daily/weekly/monthly sales, and product rankings
-- Editable settings page for store name, database path, and receipt printer name, plus read-only runtime and language/log paths
+- Editable settings page for store name, database path, and receipt printer name, with database path validation, reset-to-current behavior, and read-only runtime/language/log paths
 - Low-stock indicators
 - Layered project structure
 - Database schema script
@@ -30,7 +30,6 @@ The basics are in place:
 Still on the way:
 
 - Login and roles
-- Configuration screens
 - Barcode scanner support
 - Real receipt printer integration
 - Report export
@@ -149,7 +148,7 @@ Review today sales metrics, stock overview, daily/weekly/monthly sales summaries
 
 ### Settings
 
-Edit store name, database path, and receipt printer name. The page also shows the app settings file, language settings file, log directory, and runtime directory as read-only references. If the database path changes, the target SQLite database is initialized automatically on save.
+Edit store name, database path, and receipt printer name. The page validates that the database path points to a file path, can reset unsaved edits back to the current saved values, and shows the app settings file, language settings file, log directory, and runtime directory as read-only references. If the database path changes, the target SQLite database is initialized automatically on save.
 
 ## 🗄️ Database
 
@@ -174,7 +173,7 @@ Core tables:
 
 - Add login and roles
 - Add logging
-- Add configurable store/system settings
+- Extend configurable system settings beyond the current store/database/receipt-printer options
 - Add report export
 
 ### Phase 3: Devices and Release
