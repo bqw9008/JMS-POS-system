@@ -19,6 +19,7 @@ public sealed partial class CategoryManagementPage : WpfUserControl
         InitializeComponent();
         ApplyLocalization();
         BuildList();
+        Clear();
         Loaded += async (_, _) => await LoadAsync();
     }
 
@@ -30,7 +31,7 @@ public sealed partial class CategoryManagementPage : WpfUserControl
         NameLabel.Text = Localizer.T("Field.Name");
         DescriptionLabel.Text = Localizer.T("Field.Description");
         ActiveCheckBox.Content = Localizer.T("Field.Active");
-        SaveButton.Content = Localizer.T("Action.Save");
+        EditButton.Content = Localizer.T("Action.Edit");
         NewButton.Content = Localizer.T("Action.New");
         DeleteButton.Content = Localizer.T("Action.Delete");
         RefreshButton.Content = Localizer.T("Action.Refresh");
@@ -50,15 +51,11 @@ public sealed partial class CategoryManagementPage : WpfUserControl
         catch (Exception ex) { WpfUi.Error(this, ex); }
     }
 
-    private async Task SaveAsync()
+    private async Task SaveAsync(Category category)
     {
         try
         {
-            var row = _selected ?? new Category();
-            row.Name = NameBox.Text.Trim();
-            row.Description = DescriptionBox.Text.Trim();
-            row.IsActive = ActiveCheckBox.IsChecked == true;
-            await _service.SaveAsync(row);
+            await _service.SaveAsync(category);
             await LoadAsync();
             Clear();
         }
@@ -84,6 +81,8 @@ public sealed partial class CategoryManagementPage : WpfUserControl
         NameBox.Text = row.Name;
         DescriptionBox.Text = row.Description ?? string.Empty;
         ActiveCheckBox.IsChecked = row.IsActive;
+        EditButton.IsEnabled = true;
+        DeleteButton.IsEnabled = true;
     }
 
     private void Clear()
@@ -93,13 +92,34 @@ public sealed partial class CategoryManagementPage : WpfUserControl
         NameBox.Clear();
         DescriptionBox.Clear();
         ActiveCheckBox.IsChecked = true;
+        EditButton.IsEnabled = false;
+        DeleteButton.IsEnabled = false;
+    }
+
+    private async Task OpenEditorAsync(Category? category)
+    {
+        var dialog = new CategoryEditorWindow(category)
+        {
+            Owner = System.Windows.Window.GetWindow(this)
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            await SaveAsync(dialog.Result);
+        }
     }
 
     private void CategoryGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) => Bind();
 
-    private async void SaveButton_Click(object sender, System.Windows.RoutedEventArgs e) => await SaveAsync();
+    private async void EditButton_Click(object sender, System.Windows.RoutedEventArgs e)
+    {
+        if (_selected is not null)
+        {
+            await OpenEditorAsync(_selected);
+        }
+    }
 
-    private void NewButton_Click(object sender, System.Windows.RoutedEventArgs e) => Clear();
+    private async void NewButton_Click(object sender, System.Windows.RoutedEventArgs e) => await OpenEditorAsync(null);
 
     private async void DeleteButton_Click(object sender, System.Windows.RoutedEventArgs e) => await DeleteAsync();
 

@@ -48,21 +48,21 @@
                     <StackPanel>
                         <TextBlock x:Name="FormTitleText" Style="{StaticResource FormTitleTextStyle}" />
                         <TextBlock x:Name="CodeLabel" Style="{StaticResource FieldLabelTextStyle}" />
-                        <TextBox x:Name="CodeBox" Height="38" Padding="10,0" VerticalContentAlignment="Center" Margin="0,0,0,10" />
+                        <TextBox x:Name="CodeBox" Style="{StaticResource ReadonlyTextBoxStyle}" />
                         <TextBlock x:Name="NameLabel" Style="{StaticResource FieldLabelTextStyle}" />
-                        <TextBox x:Name="NameBox" Height="38" Padding="10,0" VerticalContentAlignment="Center" Margin="0,0,0,10" />
+                        <TextBox x:Name="NameBox" Style="{StaticResource ReadonlyTextBoxStyle}" />
                         <TextBlock x:Name="BarcodeLabel" Style="{StaticResource FieldLabelTextStyle}" />
-                        <TextBox x:Name="BarcodeBox" Height="38" Padding="10,0" VerticalContentAlignment="Center" Margin="0,0,0,10" />
+                        <TextBox x:Name="BarcodeBox" Style="{StaticResource ReadonlyTextBoxStyle}" />
                         <TextBlock x:Name="CategoryLabel" Style="{StaticResource FieldLabelTextStyle}" />
-                        <ComboBox x:Name="CategoryComboBox" Height="38" Padding="8,0" VerticalContentAlignment="Center" Margin="0,0,0,10" />
+                        <TextBox x:Name="CategoryBox" Style="{StaticResource ReadonlyTextBoxStyle}" />
                         <TextBlock x:Name="CostLabel" Style="{StaticResource FieldLabelTextStyle}" />
-                        <TextBox x:Name="CostBox" Height="38" Padding="10,0" VerticalContentAlignment="Center" Margin="0,0,0,10" />
+                        <TextBox x:Name="CostBox" Style="{StaticResource ReadonlyTextBoxStyle}" />
                         <TextBlock x:Name="PriceLabel" Style="{StaticResource FieldLabelTextStyle}" />
-                        <TextBox x:Name="PriceBox" Height="38" Padding="10,0" VerticalContentAlignment="Center" Margin="0,0,0,10" />
+                        <TextBox x:Name="PriceBox" Style="{StaticResource ReadonlyTextBoxStyle}" />
                         <TextBlock x:Name="LowStockLabel" Style="{StaticResource FieldLabelTextStyle}" />
-                        <TextBox x:Name="LowStockBox" Height="38" Padding="10,0" VerticalContentAlignment="Center" Margin="0,0,0,10" />
-                        <CheckBox x:Name="ActiveCheckBox" IsChecked="True" Margin="0,0,0,8" />
-                        <Button x:Name="SaveButton" Style="{StaticResource PrimaryButtonStyle}" Click="SaveButton_Click" />
+                        <TextBox x:Name="LowStockBox" Style="{StaticResource ReadonlyTextBoxStyle}" />
+                        <CheckBox x:Name="ActiveCheckBox" IsEnabled="False" Margin="0,0,0,8" />
+                        <Button x:Name="EditButton" Style="{StaticResource PrimaryButtonStyle}" Click="EditButton_Click" />
                         <Button x:Name="DeleteButton" Style="{StaticResource DangerButtonStyle}" Click="DeleteButton_Click" />
                     </StackPanel>
                 </ScrollViewer>

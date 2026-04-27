@@ -41,11 +41,11 @@
                     <StackPanel>
                         <TextBlock x:Name="FormTitleText" Style="{StaticResource FormTitleTextStyle}" />
                         <TextBlock x:Name="NameLabel" Style="{StaticResource FieldLabelTextStyle}" />
-                        <TextBox x:Name="NameBox" Height="38" Padding="10,0" VerticalContentAlignment="Center" Margin="0,0,0,10" />
+                        <TextBox x:Name="NameBox" Style="{StaticResource ReadonlyTextBoxStyle}" />
                         <TextBlock x:Name="DescriptionLabel" Style="{StaticResource FieldLabelTextStyle}" />
-                        <TextBox x:Name="DescriptionBox" Height="88" Padding="10" VerticalContentAlignment="Top" TextWrapping="Wrap" AcceptsReturn="True" Margin="0,0,0,10" />
-                        <CheckBox x:Name="ActiveCheckBox" IsChecked="True" Margin="0,0,0,8" />
-                        <Button x:Name="SaveButton" Style="{StaticResource PrimaryButtonStyle}" Click="SaveButton_Click" />
+                        <TextBox x:Name="DescriptionBox" Style="{StaticResource MultilineTextBoxStyle}" IsReadOnly="True" Background="{StaticResource SubtleBackgroundBrush}" />
+                        <CheckBox x:Name="ActiveCheckBox" IsEnabled="False" Margin="0,0,0,8" />
+                        <Button x:Name="EditButton" Style="{StaticResource PrimaryButtonStyle}" Click="EditButton_Click" />
                         <Button x:Name="NewButton" Style="{StaticResource SecondaryButtonStyle}" Click="NewButton_Click" />
                         <Button x:Name="DeleteButton" Style="{StaticResource DangerButtonStyle}" Click="DeleteButton_Click" />
                         <Button x:Name="RefreshButton" Style="{StaticResource SecondaryButtonStyle}" Click="RefreshButton_Click" />

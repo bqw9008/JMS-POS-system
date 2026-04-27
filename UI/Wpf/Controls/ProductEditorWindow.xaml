@@ -1,0 +1,48 @@
+<Window x:Class="POS_system_cs.UI.Wpf.Controls.ProductEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Width="480"
+        Height="620"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="{StaticResource ShellBackgroundBrush}"
+        FontFamily="Microsoft YaHei UI">
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border Style="{StaticResource CardBorderStyle}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock x:Name="CodeLabel" Style="{StaticResource FieldLabelTextStyle}" />
+                    <TextBox x:Name="CodeBox" Style="{StaticResource TextBoxBaseStyle}" />
+                    <TextBlock x:Name="NameLabel" Style="{StaticResource FieldLabelTextStyle}" />
+                    <TextBox x:Name="NameBox" Style="{StaticResource TextBoxBaseStyle}" />
+                    <TextBlock x:Name="BarcodeLabel" Style="{StaticResource FieldLabelTextStyle}" />
+                    <TextBox x:Name="BarcodeBox" Style="{StaticResource TextBoxBaseStyle}" />
+                    <TextBlock x:Name="CategoryLabel" Style="{StaticResource FieldLabelTextStyle}" />
+                    <ComboBox x:Name="CategoryComboBox" Style="{StaticResource ComboBoxBaseStyle}" />
+                    <TextBlock x:Name="CostLabel" Style="{StaticResource FieldLabelTextStyle}" />
+                    <TextBox x:Name="CostBox" Style="{StaticResource TextBoxBaseStyle}" />
+                    <TextBlock x:Name="PriceLabel" Style="{StaticResource FieldLabelTextStyle}" />
+                    <TextBox x:Name="PriceBox" Style="{StaticResource TextBoxBaseStyle}" />
+                    <TextBlock x:Name="LowStockLabel" Style="{StaticResource FieldLabelTextStyle}" />
+                    <TextBox x:Name="LowStockBox" Style="{StaticResource TextBoxBaseStyle}" />
+                    <CheckBox x:Name="ActiveCheckBox" IsChecked="True" Margin="0,0,0,8" />
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+            <Button x:Name="SaveButton"
+                    Style="{StaticResource DialogPrimaryButtonStyle}"
+                    IsDefault="True"
+                    Click="SaveButton_Click" />
+            <Button x:Name="CancelButton"
+                    Style="{StaticResource DialogSecondaryButtonStyle}"
+                    IsCancel="True" />
+        </StackPanel>
+    </Grid>
+</Window>

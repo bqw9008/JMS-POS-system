@@ -113,8 +113,10 @@ public static class Localizer
 
         ["Action.Save"] = ("Save", "保存"),
         ["Action.New"] = ("New", "新增"),
+        ["Action.Edit"] = ("Edit", "编辑"),
         ["Action.Delete"] = ("Delete", "删除"),
         ["Action.Refresh"] = ("Refresh", "刷新"),
+        ["Action.Cancel"] = ("Cancel", "取消"),
         ["Action.Apply"] = ("Apply Enter", "应用 Enter"),
         ["Action.Search"] = ("Search", "搜索"),
         ["Action.DeleteDisable"] = ("Delete / Disable", "删除/停用"),

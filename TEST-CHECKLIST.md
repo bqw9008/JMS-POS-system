@@ -51,36 +51,38 @@ dotnet run
 
 ## Category Management
 
-- [ ] Create a category with valid name and optional description
-- [ ] Edit an existing category and confirm the list refreshes
-- [ ] Delete a category that has no linked products
-- [ ] Confirm deletion is blocked for a category linked to products
-- [ ] Confirm empty category name is rejected
+- [x] Create a category from the new-category dialog with valid name and optional description
+- [x] Edit an existing category from the edit dialog and confirm the list refreshes
+- [x] Confirm the category detail panel outside the dialog is read-only
+- [x] Delete a category that has no linked products
+- [x] Confirm deletion is blocked for a category linked to products
+- [x] Confirm empty category name is rejected
 
 ## Product Management
 
-- [ ] Create a product with code, name, barcode, category, cost, sale price, and low-stock threshold
-- [ ] Edit an existing product and confirm changes are persisted
-- [ ] Search by code, barcode, and name
-- [ ] Delete a product with no sales history and confirm it is removed
-- [ ] Delete a product with sales history and confirm it is disabled instead of hard deleted
-- [ ] Confirm empty required fields are rejected
-- [ ] Confirm negative price or low-stock values are rejected
+- [x] Create a product from the new-product dialog with code, name, barcode, category, cost, sale price, and low-stock threshold
+- [x] Edit an existing product from the edit dialog and confirm changes are persisted
+- [x] Confirm the product detail panel outside the dialog is read-only
+- [x] Search by code, barcode, and name
+- [x] Delete a product with no sales history and confirm it is removed
+- [x] Delete a product with sales history and confirm it is disabled instead of hard deleted
+- [x] Confirm empty required fields are rejected
+- [x] Confirm negative price or low-stock values are rejected
 
 ## Inventory Management
 
-- [ ] Open inventory page and verify current stock list loads
-- [ ] Adjust stock by delta with positive quantity
-- [ ] Adjust stock by delta with negative quantity
-- [ ] Set stock directly to a valid value
-- [ ] Confirm stock cannot become negative
-- [ ] Confirm adjustment quantity `0` is rejected
-- [ ] Confirm low-stock items are visually distinguishable
+- [x] Open inventory page and verify current stock list loads
+- [x] Adjust stock by delta with positive quantity
+- [x] Adjust stock by delta with negative quantity
+- [x] Set stock directly to a valid value
+- [x] Confirm stock cannot become negative
+- [x] Confirm adjustment quantity `0` is rejected
+- [x] Confirm low-stock items are visually distinguishable
 
 ## Cashier Basic Flow
 
-- [ ] Add product by code
-- [ ] Add product by barcode
+- [x] Add product by code
+- [x] Add product by barcode
 - [x] Add product by unique name match
 - [x] Confirm duplicate add increments quantity instead of creating a new line
 - [x] Edit selected quantity with `F6`
@@ -88,7 +90,7 @@ dotnet run
 - [x] Clear cart with `F4`
 - [x] Focus product input with `F2`
 - [x] Clear input with `Esc`
-- [ ] Confirm empty cart cannot enter checkout
+- [x] Confirm empty cart cannot enter checkout
 
 ## Cashier Payment Flow
 
@@ -117,23 +119,23 @@ dotnet run
 - [x] Complete a checkout and verify the order appears in sales records
 - [x] Open the saved order and verify line items match the cart
 - [x] Confirm stock is deducted after successful checkout
-- [ ] Confirm sold products cannot be hard deleted afterward
+- [x] Confirm sold products cannot be hard deleted afterward
 
 ## Sales Records
 
 - [x] Query orders for today
 - [x] Query orders for a custom date range
 - [x] Confirm invalid date range is rejected
-- [ ] Open order details and verify totals
-- [ ] Confirm summary totals match the current result set
+- [x] Open order details and verify totals
+- [x] Confirm summary totals match the current result set
 
 ## Reports
 
 - [x] Open reports page and confirm dashboard metrics load
 - [x] Verify today sales and today order count after recent checkouts
 - [x] Verify stock overview reflects inventory changes
-- [ ] Verify daily, weekly, and monthly summary tabs load
-- [ ] Verify top-selling and slow-selling product rankings load
+- [x] Verify daily, weekly, and monthly summary tabs load
+- [x] Verify top-selling and slow-selling product rankings load
 
 ## Settings
 
@@ -149,9 +151,9 @@ dotnet run
 
 - [x] Confirm log file is created under `%LOCALAPPDATA%\POS-system-cs\logs\`
 - [x] Confirm app start and exit are recorded
-- [ ] Confirm checkout activity is recorded
-- [ ] Confirm inventory changes are recorded
-- [ ] Confirm unexpected operation failures are written to log
+- [x] Confirm checkout activity is recorded
+- [x] Confirm inventory changes are recorded
+- [x] Confirm unexpected operation failures are written to log
 
 ## Negative And Edge Cases
 

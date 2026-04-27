@@ -22,7 +22,7 @@ public sealed partial class ProductManagementPage : WpfUserControl
         InitializeComponent();
         ApplyLocalization();
         BuildGrid();
-        BuildForm();
+        Clear();
         Loaded += async (_, _) => await LoadAsync();
     }
 
@@ -41,7 +41,7 @@ public sealed partial class ProductManagementPage : WpfUserControl
         PriceLabel.Text = Localizer.T("Field.Price");
         LowStockLabel.Text = Localizer.T("Field.LowStock");
         ActiveCheckBox.Content = Localizer.T("Field.Active");
-        SaveButton.Content = Localizer.T("Action.Save");
+        EditButton.Content = Localizer.T("Action.Edit");
         DeleteButton.Content = Localizer.T("Action.DeleteDisable");
     }
 
@@ -54,13 +54,6 @@ public sealed partial class ProductManagementPage : WpfUserControl
         ProductGrid.Columns.Add(WpfUi.MoneyColumn(Localizer.T("Field.Price"), nameof(Product.SalePrice), 90));
         ProductGrid.Columns.Add(WpfUi.MoneyColumn(Localizer.T("Field.Low"), nameof(Product.LowStockThreshold), 80));
         ProductGrid.Columns.Add(WpfUi.CheckColumn(Localizer.T("Field.Active"), nameof(Product.IsActive), 80));
-    }
-
-    private void BuildForm()
-    {
-        CategoryComboBox.ItemsSource = _categories;
-        CategoryComboBox.DisplayMemberPath = nameof(Category.Name);
-        CategoryComboBox.SelectedValuePath = nameof(Category.Id);
     }
 
     private async Task LoadAsync()
@@ -81,20 +74,11 @@ public sealed partial class ProductManagementPage : WpfUserControl
         catch (Exception ex) { WpfUi.Error(this, ex); }
     }
 
-    private async Task SaveAsync()
+    private async Task SaveAsync(Product product)
     {
         try
         {
-            var row = _selected ?? new Product();
-            row.Code = CodeBox.Text.Trim();
-            row.Name = NameBox.Text.Trim();
-            row.Barcode = BarcodeBox.Text.Trim();
-            row.CategoryId = CategoryComboBox.SelectedValue is Guid id ? id : Guid.Empty;
-            row.CostPrice = WpfUi.Number(CostBox.Text);
-            row.SalePrice = WpfUi.Number(PriceBox.Text);
-            row.LowStockThreshold = WpfUi.Number(LowStockBox.Text);
-            row.IsActive = ActiveCheckBox.IsChecked == true;
-            await _products.SaveAsync(row);
+            await _products.SaveAsync(product);
             await LoadProductsAsync();
             Clear();
         }
@@ -120,11 +104,13 @@ public sealed partial class ProductManagementPage : WpfUserControl
         CodeBox.Text = row.Code;
         NameBox.Text = row.Name;
         BarcodeBox.Text = row.Barcode;
-        CategoryComboBox.SelectedValue = row.CategoryId;
+        CategoryBox.Text = CategoryName(row.CategoryId);
         CostBox.Text = row.CostPrice.ToString("N2");
         PriceBox.Text = row.SalePrice.ToString("N2");
         LowStockBox.Text = row.LowStockThreshold.ToString("N2");
         ActiveCheckBox.IsChecked = row.IsActive;
+        EditButton.IsEnabled = true;
+        DeleteButton.IsEnabled = true;
     }
 
     private void Clear()
@@ -134,20 +120,51 @@ public sealed partial class ProductManagementPage : WpfUserControl
         CodeBox.Clear();
         NameBox.Clear();
         BarcodeBox.Clear();
+        CategoryBox.Clear();
         CostBox.Text = "0.00";
         PriceBox.Text = "0.00";
         LowStockBox.Text = "0.00";
         ActiveCheckBox.IsChecked = true;
-        CategoryComboBox.SelectedIndex = _categories.Count > 0 ? 0 : -1;
+        EditButton.IsEnabled = false;
+        DeleteButton.IsEnabled = false;
+    }
+
+    private string CategoryName(Guid categoryId)
+    {
+        return _categories.FirstOrDefault(x => x.Id == categoryId)?.Name ?? string.Empty;
+    }
+
+    private async Task OpenEditorAsync(Product? product)
+    {
+        if (_categories.Count == 0)
+        {
+            await LoadCategoriesAsync();
+        }
+
+        var dialog = new ProductEditorWindow(product, _categories)
+        {
+            Owner = System.Windows.Window.GetWindow(this)
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            await SaveAsync(dialog.Result);
+        }
     }
 
     private void ProductGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) => Bind();
 
     private async void SearchButton_Click(object sender, System.Windows.RoutedEventArgs e) => await LoadProductsAsync();
 
-    private void NewButton_Click(object sender, System.Windows.RoutedEventArgs e) => Clear();
+    private async void NewButton_Click(object sender, System.Windows.RoutedEventArgs e) => await OpenEditorAsync(null);
 
-    private async void SaveButton_Click(object sender, System.Windows.RoutedEventArgs e) => await SaveAsync();
+    private async void EditButton_Click(object sender, System.Windows.RoutedEventArgs e)
+    {
+        if (_selected is not null)
+        {
+            await OpenEditorAsync(_selected);
+        }
+    }
 
     private async void DeleteButton_Click(object sender, System.Windows.RoutedEventArgs e) => await DeleteAsync();
 }
