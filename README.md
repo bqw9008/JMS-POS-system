@@ -165,6 +165,10 @@ Core tables:
 
 ## 🛣️ Roadmap
 
+### Next Development Focus
+
+Design the receipt printing abstraction before connecting a real printer. The next implementation should extract a receipt data model, a printable template, and an `IReceiptPrinter`-style interface so the current preview flow can become one implementation behind the same contract.
+
 ### Phase 1: MVP
 
 - Finish product, category, inventory, cashier, sales record, and basic report flows
@@ -179,7 +183,7 @@ Core tables:
 ### Phase 3: Devices and Release
 
 - Support barcode scanners
-- Support real receipt printing beyond the current preview window
+- Support real receipt printing beyond the current preview window, starting from a receipt document model and printer abstraction
 - Prepare deployment package
 - Polish the UI
 

@@ -16,6 +16,7 @@ Current focus:
 Out of current scope:
 
 - Real receipt printer integration
+- Receipt printer abstraction verification before real printer integration
 - Barcode scanner hardware compatibility
 - Login / roles
 - Refunds
